@@ -33,16 +33,19 @@ public:
 
 	virtual void PostInitializeComponents() override;
 
-	void Attack();
+	virtual void Attack();
 
 	virtual void AttackEnd() override;
 	FOnAttackEndDelegate OnAttackEnd;
+
+	virtual void AttackCheck();
+
+	float GetAttackRange();
 
 protected:
 	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 	virtual void PossessedBy(AController* newController) override;
 
-private:
 	UPROPERTY(VisibleAnywhere, Category = UI)
 		class UWidgetComponent* Hp_UI;
 
@@ -54,6 +57,15 @@ private:
 
 	bool bOnHpBar;
 	float lifeTime_HpBar;
+
+	UPROPERTY(EditAnywhere, Category = Attack)
+		float AttackRange;
+	UPROPERTY(EditAnywhere, Category = Attack)
+		float AttackRadius;
+
+private:
+	
+
 
 public: 
 

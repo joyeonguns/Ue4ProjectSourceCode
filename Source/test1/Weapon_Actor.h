@@ -19,7 +19,7 @@ public:
 	AWeapon_Actor(const class FObjectInitializer& ObjectInitializer);
 
 	void SetOwningPawn(class ATPS_Character* WeaponOwner);
-	void AttachMeshToPawn();
+	void AttachMeshToPawn(FName AttachName);
 	void OnEquip(const class AWeapon_Actor* LastWeapon);
 	
 	void ApplyAttack();

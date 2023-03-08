@@ -4,6 +4,7 @@
 #include "EnemyBasic_Character.h"
 #include "Kismet/GameplayStatics.h"
 #include "Enemy_AIController.h"
+#include "DrawDebugHelpers.h"
 
 AEnemyBasic_Character::AEnemyBasic_Character()
 {
@@ -16,10 +17,13 @@ AEnemyBasic_Character::AEnemyBasic_Character()
 
 	bOnHpBar = false;
 	lifeTime_HpBar = 0.0f;
+	AttackRange = 150.f;
+	AttackRadius = 50.0f;
 }
 
 void AEnemyBasic_Character::Set_HpBar()
 {
+	//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("Set_HpBar"));
 	Hp_UI = CreateDefaultSubobject<UWidgetComponent>(TEXT("HP_Bar"));
 	Hp_UI->SetupAttachment(GetMesh());
 
@@ -47,27 +51,46 @@ void AEnemyBasic_Character::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 
-	Anim = Cast<UTPSAnimInstance>(GetMesh()->GetAnimInstance());
+	/*Anim = Cast<UTPSAnimInstance>(GetMesh()->GetAnimInstance());
 
 	if (Anim) {
 		Anim->OnAttackCollision_Off.AddLambda([this]() -> void {
 			UE_LOG(LogTemp, Warning, TEXT("OnAttackCollision_Off"));
 			AttackEnd();
 			});
+
+		Anim->OnAttackCollision_On.AddUObject(this,&AEnemyBasic_Character::AttackCheck);
+
 	}
 	else {
 		UE_LOG(LogTemp, Warning, TEXT("Anim_Enemy_Error"));
-	}
+	}*/
+
+	OnAttackEnd.AddLambda([this]() -> void {
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("OnAttackEnd!!!"));
+		});
 }
 
 void AEnemyBasic_Character::Attack()
 {
-	PlayAnimMontage(DefaultAttack_Montage);
+	
 }
 
 void AEnemyBasic_Character::AttackEnd()
 {
 	OnAttackEnd.Broadcast();
+
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("AttackEnd!!!"));
+}
+
+void AEnemyBasic_Character::AttackCheck()
+{
+	
+}
+
+float AEnemyBasic_Character::GetAttackRange()
+{
+	return AttackRange + AttackRadius;
 }
 
 
@@ -105,6 +128,7 @@ float AEnemyBasic_Character::TakeDamage(float Damage, FDamageEvent const& Damage
 	const float realDamage = Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
 
 	DrawHpBar();
+	AttackEnd();
 
 	SpawnDamage(realDamage);
 	return realDamage;

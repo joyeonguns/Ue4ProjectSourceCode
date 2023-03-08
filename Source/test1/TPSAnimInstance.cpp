@@ -29,6 +29,11 @@ void UTPSAnimInstance::AnimNotify_Attack_End()
 	OnAttackCollision_Off.Broadcast();
 }
 
+void UTPSAnimInstance::AnimNotify_hitStart()
+{
+	OnHitStart.Broadcast();
+}
+
 void UTPSAnimInstance::AnimNotify_AttackEnd()
 {
 	OnAttackEndDelegate.Broadcast();

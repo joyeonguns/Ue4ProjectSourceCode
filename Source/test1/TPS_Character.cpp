@@ -2,6 +2,8 @@
 
 
 #include "TPS_Character.h"
+#include "TPSPlayerController.h"
+#include "Kismet/GameplayStatics.h"
 #include <Engine/Classes/Components/CapsuleComponent.h>
 
 // Sets default values
@@ -42,12 +44,12 @@ void ATPS_Character::PostInitializeComponents()
 	Super::PostInitializeComponents();
 }
 
-void ATPS_Character::SpawnDefaultInventory()
+void ATPS_Character::SpawnDefaultInventory(int32 itemCode)
 {
 	int32 NumWeaponClasses = DefaultInventoryClasses.Num();
 	FActorSpawnParameters SpawnInfo;
 	UWorld* world = GetWorld();
-	AWeapon_Actor* NewWeapon = world->SpawnActor<AWeapon_Actor>(DefaultInventoryClasses[0], SpawnInfo);
+	AWeapon_Actor* NewWeapon = world->SpawnActor<AWeapon_Actor>(DefaultInventoryClasses[itemCode], SpawnInfo);
 	AddWeapon(NewWeapon);
 
 	if (Inventory.Num() > 0) {
@@ -72,8 +74,32 @@ void ATPS_Character::SetCurrentWeapon(AWeapon_Actor* NewWeapon, AWeapon_Actor* L
 	if (NewWeapon) {
 		CurrentWeapon = NewWeapon;
 		NewWeapon->SetOwningPawn(this);
-		NewWeapon->OnEquip(LastWeapon);
+		EquipWeapon();
 	}
+}
+
+void ATPS_Character::EquipWeapon()
+{
+	if (CurrentWeapon) {
+		CurrentWeapon->AttachMeshToPawn(WeaponAttackPoint);
+	}
+}
+
+void ATPS_Character::DisArmWeapon()
+{
+	if (CurrentWeapon) {
+		CurrentWeapon->AttachMeshToPawn(DisarmPoint);
+	}
+}
+
+float ATPS_Character::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+	float takeDamage = Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Player Take Damage"));
+
+	
+
+	return takeDamage;
 }
 
 // ============= weapon ==============
@@ -87,19 +113,10 @@ void ATPS_Character::BeginPlay()
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("Set TPS_Character"));
 	}
 
-	SpawnDefaultInventory();
 
-	UHUD_UserWidget* hud = CreateWidget<UHUD_UserWidget>(GetWorld(), Hud_widgetClass);
-	if (hud) {
-		hud->SetEnemyCount(2, 2);
-		hud->SetHP(80.0f , 80.0f);
-		hud->SetUlti(60.0f, 100.0f);
-		hud->AddToViewport();
-	}
-	else {
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("Hud not find"));
-	}
-
+	Status_Component->OnHpApply.AddUObject(this, &ATPS_Character::HpUIAplly);
+	
+	bDisarm = false;
 }
 
 void ATPS_Character::ControllMode(int32 mode)
@@ -145,6 +162,7 @@ void ATPS_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	InputComponent->BindAction("Jump", IE_Released, this, &ATPS_Character::StopJump);
 	InputComponent->BindAction("Dash", IE_Pressed, this, &ATPS_Character::PressDash);
 	InputComponent->BindAction("Attack_0", IE_Pressed, this, &ATPS_Character::Attack_0);
+	InputComponent->BindAction("Disarm", IE_Pressed, this, &ATPS_Character::Disarm);
 
 }
 
@@ -160,6 +178,8 @@ void ATPS_Character::MoveRight(float Axisval)
 {
 	if (isCanMove) {
 		FVector Direction = FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::Y);
+		
+		
 		AddMovementInput(Direction, Axisval);
 	}
 	
@@ -168,7 +188,7 @@ void ATPS_Character::MoveRight(float Axisval)
 void ATPS_Character::AddControllerPitchInput(float Axisval)
 {	
 	if (isCanRotate) {
-		Axisval *= 0.5f;
+		//Axisval *= 0.5f;
 		Super::AddControllerPitchInput(Axisval);
 	}
 	
@@ -212,15 +232,27 @@ void ATPS_Character::StopJump()
 
 void ATPS_Character::PressDash()
 {
+	/*SetGroundFriction(0.0f);
+
+	FVector DashVector = (GetVelocity().GetSafeNormal()) * 2000;
+	LaunchCharacter(DashVector, false, true);
+	PlayAnimMontage(Dash_AnimMontage, 0.2f);
+
+
+	FTimerHandle TH_Friction;
+	GetWorldTimerManager().SetTimer(TH_Friction, this, &ATPS_Character::ResetGroundFriction, 0.3f, false);
+	*/
+
+
 	// ´ë½¬ ¿Â
 	if (isDash == false) {
 		isDash = true;
 
-		GetCharacterMovement()->MaxWalkSpeed = 900;
+		GetCharacterMovement()->MaxWalkSpeed = 700;
 	}
 	else {
 		isDash = false;
-		GetCharacterMovement()->MaxWalkSpeed = 600;
+		GetCharacterMovement()->MaxWalkSpeed = 400;
 	}
 }
 
@@ -247,6 +279,8 @@ void ATPS_Character::Attack_0()
 	//	GetWorldTimerManager().SetTimer(TH_Attack0_End, this, &ATPS_Character::Attack_0_End, 1.f, false);
 	//}
 
+	if (bDisarm) return;
+
 	if (!isDuringAttack) {
 		CurrentWeapon->ApplyAttack();
 	}
@@ -255,12 +289,41 @@ void ATPS_Character::Attack_0()
 	
 }
 
-//void ATPS_Character::Attack_0_End()
-//{
-//	isDuringAttack = false;
-//	isCanJump = true;
-//	isCanMove = true;
-//	isCanRotate = true;
-//}
+void ATPS_Character::Disarm()
+{
+	if (bDisarm) {
+		bDisarm = false;
+		PlayAnimMontage(Armed_AnimMontage);
+
+		FTimerHandle TH_Equip;
+		GetWorldTimerManager().SetTimer(TH_Equip, this, &ATPS_Character::EquipWeapon, 1.f, false);		
+	}
+	else {
+		bDisarm = true;
+		PlayAnimMontage(Disarm_AnimMontage);
+
+		FTimerHandle TH_Disarm;
+		GetWorldTimerManager().SetTimer(TH_Disarm, this, &ATPS_Character::DisArmWeapon, 1.f, false);
+
+	}
+}
+
+void ATPS_Character::SetGroundFriction(float friction)
+{
+	GetCharacterMovement()->GroundFriction = friction;
+}
+
+void ATPS_Character::ResetGroundFriction()
+{
+	GetCharacterMovement()->GroundFriction = 8.0f;
+}
+
+void ATPS_Character::HpUIAplly()
+{
+	auto playerController = Cast<ATPSPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+	playerController->GetHUD()->SetHP(Status_Component->GetHpRatio(), 1.f);
+
+}
+
 
 

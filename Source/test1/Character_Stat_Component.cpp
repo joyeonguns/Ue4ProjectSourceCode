@@ -4,6 +4,8 @@
 #include "Character_Stat_Component.h"
 #include "TPSGameInstance.h"
 #include "Kismet/GameplayStatics.h"
+#include "TPSPlayerController.h"
+#include "HUD_UserWidget.h"
 
 // Sets default values for this component's properties
 UCharacter_Stat_Component::UCharacter_Stat_Component()
@@ -26,7 +28,7 @@ void UCharacter_Stat_Component::BeginPlay()
 	Super::BeginPlay();
 
 	// ...
-	
+		
 }
 
 void UCharacter_Stat_Component::InitializeComponent()
@@ -66,7 +68,6 @@ void UCharacter_Stat_Component::SetDamage(float Damage)
 		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Delecate SetDamage"));
 		currentHp = FMath::Clamp<float>(currentHp - Damage, 0.0f, current_Status->Hp);
 		SetHp(currentHp);
-		
 	}
 }
 
@@ -93,6 +94,11 @@ float UCharacter_Stat_Component::GetHpRatio()
 	if (currentHp <= KINDA_SMALL_NUMBER)
 		currentHp = 0.0f;
 	return currentHp / current_Status->Hp;
+}
+
+float UCharacter_Stat_Component::GetHp()
+{
+	return currentHp;
 }
 
 

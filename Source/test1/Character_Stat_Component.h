@@ -34,8 +34,11 @@ public:
 	float GetAttack();
 	float GetHpRatio();
 
+	float GetHp();
+
 	FOnHPIsZeroDelegate OnHpIsZero;
 	FOnHPApllyDelegate OnHpApply;
+
 
 private:
 
@@ -47,4 +50,7 @@ private:
 		FString Role;
 	UPROPERTY(Transient, EditInstanceOnly, Category = Stat, Meta = (AllowPrivateAccess = true))
 		float currentHp;
+
+	UPROPERTY(EditAnywhere, Category = HUD)
+		class UHUD_UserWidget* Hud;
 };

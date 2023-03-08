@@ -27,6 +27,15 @@ UTPSGameInstance::UTPSGameInstance()
 		}*/
 	}
 
+	statusArray.Init(6,8);
+
+	for (int i = 0; i < 3; i++) {
+		UnLockItemList.Add(0);
+	}	
+
+	for (int i = 0; i < 12; i++) {
+		LockItemList.Add(0);
+	}
 }
 
 void UTPSGameInstance::Init()

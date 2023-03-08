@@ -45,6 +45,15 @@ protected:
 		UAnimMontage* BeHit_AnimMontage;
 
 	UPROPERTY(EditAnywhere, Category = Anim)
+		UAnimMontage* Dash_AnimMontage;
+
+	UPROPERTY(EditAnywhere, Category = Anim)
+		UAnimMontage* Disarm_AnimMontage;
+
+	UPROPERTY(EditAnywhere, Category = Anim)
+		UAnimMontage* Armed_AnimMontage;
+
+	UPROPERTY(EditAnywhere, Category = Anim)
 		UAnimMontage* Death_AnimMontage;
 	// ***** Anim ****
 
@@ -56,6 +65,11 @@ protected:
 	bool isDuringAttack;
 
 	bool bCanNextAttack;
+
+	bool bDisarm;
+
+	bool bShocking;
+	float shockTime;
 
 	int32 MaxCombo;
 	int32 currentCombo;
@@ -75,14 +89,18 @@ public:
 
 	void DieCharacter();
 
+	void DestroyCharacter();
+
 	UPROPERTY(VisibleAnywhere, Category = Stat)
 		class UCharacter_Stat_Component* Status_Component;
-
 	
-
 
 	void DefaultAttack();
 
 	virtual void AttackEnd();
 	
+	void TakeShock();
+	void EndShock();
+
+	bool GetCheckShocking();
 };

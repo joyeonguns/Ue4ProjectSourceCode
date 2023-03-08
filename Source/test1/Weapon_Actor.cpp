@@ -26,18 +26,18 @@ void AWeapon_Actor::SetOwningPawn(class ATPS_Character* WeaponOwner)
 	}
 }
 
-void AWeapon_Actor::AttachMeshToPawn()
+void AWeapon_Actor::AttachMeshToPawn(FName AttachName)
 {
 	if (MyOwner) {
 		USkeletalMeshComponent* PawnMessh = MyOwner->GetSpecificPawnMesh();
-		FName AttackPoint = MyOwner->GetWeaponAttachPoint();
-		WeaponMesh->AttachTo(PawnMessh, AttackPoint);
+		//FName AttackPoint = MyOwner->GetWeaponAttachPoint();
+		WeaponMesh->AttachTo(PawnMessh, AttachName);
 	}
 }
 
 void AWeapon_Actor::OnEquip(const AWeapon_Actor* LastWeapon)
 {
-	AttachMeshToPawn();
+	//AttachMeshToPawn();
 }
 
 void AWeapon_Actor::ApplyAttack()

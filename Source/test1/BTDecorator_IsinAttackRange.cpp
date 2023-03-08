@@ -20,10 +20,14 @@ bool UBTDecorator_IsinAttackRange::CalculateRawConditionValue(UBehaviorTreeCompo
 	if (!ControllingPawn) false;
 
 	auto Target = Cast<ATPS_Character>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(AEnemy_AIController::TargetKey));
-	
+	auto Enemy = Cast<AEnemyBasic_Character>(OwnerComp.GetAIOwner()->GetPawn());
+
 	if (Target == nullptr) return false;
 
-	bResult = (Target->GetDistanceTo(ControllingPawn) <= 200.f);
+	float AttackRange = Enemy->GetAttackRange();
+
+	bResult = (Target->GetDistanceTo(ControllingPawn) <= AttackRange);
+
 
 	if (bResult)
 		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, FString::Printf(TEXT("Distance = true : %f"), Target->GetDistanceTo(ControllingPawn)));

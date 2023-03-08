@@ -26,7 +26,7 @@ public:
 	FName GetWeaponAttachPoint() const;
 	void EquipWeapon(class AWeapon_Actor* Weapon);
 	virtual void PostInitializeComponents() override;
-	void SpawnDefaultInventory();
+	void SpawnDefaultInventory(int32 itemCode);
 	// *** weapon ***
 	
 protected:
@@ -36,6 +36,9 @@ protected:
 
 	// *** weapon ***
 	//USkeletalMeshComponent* WeaponComponent;
+
+	UPROPERTY(EditDefaultsOnly, Category = Inventory)
+	FName DisarmPoint;
 
 	UPROPERTY(EditDefaultsOnly, Category = Inventory)
 	FName WeaponAttackPoint;
@@ -51,8 +54,14 @@ protected:
 	
 	UPROPERTY(EditDefaultsOnly, Category=Inventory)
 	TArray<TSubclassOf<class AWeapon_Actor>> DefaultInventoryClasses;	
+
+	void EquipWeapon();
+
+	void DisArmWeapon();
 		
 	// *** weapon ***
+
+	virtual float TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 
 public:	
 
@@ -84,6 +93,9 @@ public:
 	UFUNCTION()
 		void Attack_0();
 
+	UFUNCTION()
+		void Disarm();
+
 	/*UFUNCTION()
 		void Attack_0_End();*/
 
@@ -106,9 +118,13 @@ public:
 	UPROPERTY(EditAnywhere, Category = Anim)
 		UAnimMontage* DoubleJump_AnimMontage;
 
-	UPROPERTY(EditAnywhere, Category = HUD)
-		TSubclassOf<class UHUD_UserWidget> Hud_widgetClass;
+	
 	
 	/*UPROPERTY()
 		UHUD_UserWidget* hud;*/
+
+	void SetGroundFriction(float friction);
+	void ResetGroundFriction();
+
+	void HpUIAplly();
 };

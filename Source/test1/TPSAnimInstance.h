@@ -14,6 +14,7 @@ DECLARE_MULTICAST_DELEGATE(FOnCanNextComboDelegate);
 DECLARE_MULTICAST_DELEGATE(FOnAttackEndDelegate);
 DECLARE_MULTICAST_DELEGATE(FOnAttackCollision_OnDelegate);
 DECLARE_MULTICAST_DELEGATE(FOnAttackCollision_OffDelegate);
+DECLARE_MULTICAST_DELEGATE(FOnHitStart_Delegate);
 
 UCLASS()
 class TEST1_API UTPSAnimInstance : public UAnimInstance
@@ -29,6 +30,7 @@ public:
 	FOnAttackEndDelegate OnAttackEndDelegate;
 	FOnAttackCollision_OnDelegate OnAttackCollision_On;
 	FOnAttackCollision_OffDelegate OnAttackCollision_Off;
+	FOnHitStart_Delegate OnHitStart;
 
 protected:
 
@@ -46,6 +48,9 @@ private:
 
 	UFUNCTION()
 		void AnimNotify_Attack_End();
+
+	UFUNCTION()
+		void AnimNotify_hitStart();
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Pawn, Meta=(AllowPrivateAccess=true))
 		float CurrentPawnSpeed;

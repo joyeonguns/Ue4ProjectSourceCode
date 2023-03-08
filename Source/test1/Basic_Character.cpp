@@ -67,8 +67,6 @@ void ABasic_Character::PostInitializeComponents()
 	}
 }
 
-
-
 void ABasic_Character::OnHit(float InputDamage, FDamageEvent const& DamageEvent, APawn* PawnInstigator, AActor* DamageCauser)
 {
 }
@@ -76,23 +74,20 @@ void ABasic_Character::OnHit(float InputDamage, FDamageEvent const& DamageEvent,
 float ABasic_Character::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
 	const float realDamage = Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
-
-	myHealth -= realDamage;
 	
+	
+
 	Status_Component->SetDamage(realDamage);
 
+	TakeShock();
 
-	if (BeHit_AnimMontage && myHealth > 20.0f) {
-		PlayAnimMontage(BeHit_AnimMontage);
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Magenta, FString::Printf(TEXT("HP : %f"), myHealth));
-	}
-
-	if (myHealth <= 0) {
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Magenta, FString::Printf(TEXT("Die HP : %f"), myHealth));
-		
-		PlayAnimMontage(Death_AnimMontage);
-		FTimerHandle TH_Attack0_End;
-		GetWorldTimerManager().SetTimer(TH_Attack0_End, this, &ABasic_Character::DieCharacter, 3.3f, false);	
+	if (BeHit_AnimMontage) {
+		if (Status_Component->GetHp() <= 0.0f) {
+			DieCharacter();
+		}
+		else {
+			PlayAnimMontage(BeHit_AnimMontage);
+		}
 	}
 
 	return realDamage;
@@ -102,7 +97,12 @@ float ABasic_Character::TakeDamage(float Damage, FDamageEvent const& DamageEvent
 void ABasic_Character::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	if (bShocking) {
+		shockTime -= DeltaTime;
+		if (shockTime <= 0.0f) {
+			EndShock();
+		}
+	}
 }
 
 // Called to bind functionality to input
@@ -114,12 +114,22 @@ void ABasic_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 void ABasic_Character::DieCharacter()
 {
+	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Magenta, FString::Printf(TEXT("Die HP : %f"), myHealth));
+
+	PlayAnimMontage(Death_AnimMontage);
+	FTimerHandle TH_Attack0_End;
+	GetWorldTimerManager().SetTimer(TH_Attack0_End, this, &ABasic_Character::DieCharacter, 3.3f, false);
+
+}
+
+void ABasic_Character::DestroyCharacter()
+{
 	this->Destroy();
 }
 
 void ABasic_Character::DefaultAttack()
 {
-	if (isDuringAttack == false) {
+	if (bShocking == false && isDuringAttack == false) {
 		if (bCanNextAttack == true && currentCombo <= MaxCombo && currentCombo != 1) {
 			//currentCombo++;
 		}
@@ -152,35 +162,29 @@ void ABasic_Character::AttackEnd()
 	isCanRotate = true;
 }
 
-//void ABasic_Character::SpawnDamage(float damage)
-//{
-//	//UWorld* world = GetWorld();
-//	//FRotator SpawnRotation = { 0,0,0 };
-//	//FVector myLoc = GetActorLocation() + FVector(0,0,150.0f);
-//	//if (world)
-//	//{
-//	//	// 스폰하기 위해 필요한 파라메터 설정
-//	//	FActorSpawnParameters SpawnParamater;
-//	//	SpawnParamater.Owner = this;
-//	//	SpawnParamater.Instigator = GetInstigator();
-//	//	// 오브젝트 스폰
-//	//	AFloatingDamage_Actor* floatingDamage = world->SpawnActor<AFloatingDamage_Actor>(Damage_Actor, myLoc, SpawnRotation, SpawnParamater);
-//	//	// 스폰된 오브젝트의 함수 사용
-//	//	if (floatingDamage)
-//	//	{
-//	//		floatingDamage->SetDamage(damage);
-//	//	}
-//	//	else {
-//	//		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Magenta, FString::Printf(TEXT("floatingDamage Error")));
-//
-//	//	}
-//	//}
-//	//else {
-//	//	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Magenta, FString::Printf(TEXT("world Error")));
-//
-//	//}
-//
-//	
-//
-//}
+void ABasic_Character::TakeShock()
+{
+	bShocking = true;
+	isCanJump = false;
+	isCanMove = false;
+	isCanRotate = false;
+	shockTime = 0.5f;
+}
+
+void ABasic_Character::EndShock()
+{
+	bShocking = false;
+	isCanJump = true;
+	isCanMove = true;
+	isCanRotate = true;
+	isDuringAttack = false;
+	bCanNextAttack = false;
+}
+
+bool ABasic_Character::GetCheckShocking()
+{
+	return bShocking;
+}
+
+
 

@@ -6,6 +6,7 @@
 #include "Engine/GameInstance.h"
 #include "Engine/DataTable.h"
 #include "CharacterStat_DataTable.h"
+#include "DataTable_Status.h"
 #include "TPSGameInstance.generated.h"
 
 /**
@@ -50,5 +51,17 @@ public :
 
 	UPROPERTY()
 		class UDataTable* Character_stat_Table;
+
+	UPROPERTY(VisibleAnywhere, Category = Status)
+		TArray<int32> statusArray;
+
+	UPROPERTY(VisibleAnywhere, Category = Item)
+		TArray<int32> UnLockItemList;
+
+	UPROPERTY(VisibleAnywhere, Category = Item)
+		TArray<int32> LockItemList;
+
+	UPROPERTY(VisibleAnywhere, Category = Item)
+		int32 SelectedWeaponCode = 0;
 
 };

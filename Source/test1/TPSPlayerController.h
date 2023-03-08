@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
+#include "IngameMenu_UserWidget.h"
 #include "TPSPlayerController.generated.h"
 
 /**
@@ -14,14 +15,33 @@ class TEST1_API ATPSPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 	
+public:
+	ATPSPlayerController();
+
+	virtual void BeginPlay() override;
+
+	class UHUD_UserWidget* GetHUD();
+
+	void OpenHUD();
+
+	void OpenInGameMenu();
+	void CloseInGameMenu();
+
+	virtual void SetupInputComponent() override;
+
+
 private:
-	void MoveForward(float AxisValue);
+	UPROPERTY(EditAnywhere, Category = HUD)
+		TSubclassOf<class UHUD_UserWidget> Hud_widgetClass;
 
-	//void MoveRight(float AxisValue);
+	UPROPERTY(EditAnywhere, Category = HUD)
+		class UHUD_UserWidget* Hud;
 
-	
 
-	//void InPutJump();
+	UPROPERTY(EditAnywhere, Category = UI)
+		TSubclassOf<class UIngameMenu_UserWidget> InGameMenu_Class;
 
+	UPROPERTY(EditAnywhere, Category = UI)
+		class UIngameMenu_UserWidget* InGameMenu_Instance;
 
 };
