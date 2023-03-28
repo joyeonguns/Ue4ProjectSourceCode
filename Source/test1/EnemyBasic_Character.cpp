@@ -19,6 +19,8 @@ AEnemyBasic_Character::AEnemyBasic_Character()
 	lifeTime_HpBar = 0.0f;
 	AttackRange = 150.f;
 	AttackRadius = 50.0f;
+
+	Status_Component->SetMode(1);
 }
 
 void AEnemyBasic_Character::Set_HpBar()
@@ -45,26 +47,20 @@ void AEnemyBasic_Character::BeginPlay()
 		CharacterWidget->BindCharacterStat(Status_Component);
 	}
 	Delete_HpBar();
+	bAttacking = false;
 }
 
 void AEnemyBasic_Character::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 
-	/*Anim = Cast<UTPSAnimInstance>(GetMesh()->GetAnimInstance());
+	Status_Component->OnTakeDamage.AddLambda([this]() -> void {
+		bAttacking = false;
+		AttackEnd();
+		});
 
-	if (Anim) {
-		Anim->OnAttackCollision_Off.AddLambda([this]() -> void {
-			UE_LOG(LogTemp, Warning, TEXT("OnAttackCollision_Off"));
-			AttackEnd();
-			});
 
-		Anim->OnAttackCollision_On.AddUObject(this,&AEnemyBasic_Character::AttackCheck);
-
-	}
-	else {
-		UE_LOG(LogTemp, Warning, TEXT("Anim_Enemy_Error"));
-	}*/
+	
 
 	OnAttackEnd.AddLambda([this]() -> void {
 		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("OnAttackEnd!!!"));
@@ -73,7 +69,9 @@ void AEnemyBasic_Character::PostInitializeComponents()
 
 void AEnemyBasic_Character::Attack()
 {
-	
+	if (bAttacking == false) {
+
+	}
 }
 
 void AEnemyBasic_Character::AttackEnd()
@@ -81,6 +79,15 @@ void AEnemyBasic_Character::AttackEnd()
 	OnAttackEnd.Broadcast();
 
 	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("AttackEnd!!!"));
+}
+
+void AEnemyBasic_Character::DieCharacter()
+{
+	if (bDead) return;
+	Super::DieCharacter();
+	OnDeadDelegate.Broadcast();
+
+	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Magenta, TEXT("DieCharacter"));
 }
 
 void AEnemyBasic_Character::AttackCheck()
@@ -91,6 +98,21 @@ void AEnemyBasic_Character::AttackCheck()
 float AEnemyBasic_Character::GetAttackRange()
 {
 	return AttackRange + AttackRadius;
+}
+
+void AEnemyBasic_Character::CharacterDead()
+{
+
+}
+
+void AEnemyBasic_Character::SetPrize(int32 newPrize)
+{
+	prize = newPrize;
+}
+
+int32 AEnemyBasic_Character::GetPrize()
+{
+	return prize;
 }
 
 
@@ -125,12 +147,44 @@ void AEnemyBasic_Character::Delete_HpBar()
 
 float AEnemyBasic_Character::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
-	const float realDamage = Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
+	if (bDead) return Damage;
+	float realDamage;
+
+	bool bcritical = false;
+	auto Causer = Cast<ABasic_Character>(DamageCauser);
+
+	if (Causer) {
+		int32 critical = Causer->Status_Component->GetStatus()->Critical;
+		int32 randNum = FMath::RandRange(0, 99);
+
+		if (randNum < critical) bcritical = true;
+	}
+
+	
+
+	if (bcritical) {
+		realDamage = Super::TakeDamage(Damage * 1.5f, DamageEvent, EventInstigator, DamageCauser);
+	}
+	else {
+		realDamage = Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
+	}
+
 
 	DrawHpBar();
-	AttackEnd();
 
-	SpawnDamage(realDamage);
+	SpawnDamage(realDamage, bcritical);
+
+	
+
+	auto ai = Cast<AEnemy_AIController>(GetController());
+	if (ai) {
+		auto player = Cast<ATPS_Character>(DamageCauser);
+		if (player) {
+			ai->Setplayer(player);
+		}
+	}
+
+
 	return realDamage;
 }
 
@@ -142,7 +196,7 @@ void AEnemyBasic_Character::PossessedBy(AController* newController)
 	}
 }
 
-void AEnemyBasic_Character::SpawnDamage(float damage)
+void AEnemyBasic_Character::SpawnDamage(float damage, bool critical)
 {
 	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(this, 0);
 
@@ -156,7 +210,7 @@ void AEnemyBasic_Character::SpawnDamage(float damage)
 
 	UFloatingDamage_Widget* spwDmg = CreateWidget<UFloatingDamage_Widget>(GetWorld(), Damage_Ui);
 	if (spwDmg) {
-		spwDmg->SetDamage(damage);
+		spwDmg->SetDamage(damage, critical);
 		spwDmg->SetPositionInViewport(ScreenLocation);
 		spwDmg->AddToViewport();
 	}

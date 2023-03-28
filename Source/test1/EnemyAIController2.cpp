@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Enemy_AIController.h"
+#include "EnemyAIController2.h"
 #include "NavigationSystem.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "BehaviorTree/BlackboardData.h"
@@ -10,21 +10,20 @@
 #include "Perception/AIPerceptionComponent.h"
 #include "Perception/AISenseConfig_Sight.h"
 
-const FName AEnemy_AIController::HomePosKey(TEXT("HomePos"));
-const FName AEnemy_AIController::PatrolPosKey(TEXT("PatrolPos"));
-const FName AEnemy_AIController::TargetKey(TEXT("Target"));
-const FName AEnemy_AIController::TargetPosKey(TEXT("TargetPos"));
-const FName AEnemy_AIController::bCanAttackKey(TEXT("bCanAttack"));
-const FName AEnemy_AIController::bShockKey(TEXT("bShocking"));
+const FName AEnemyAIController2::HomePosKey(TEXT("HomePos"));
+const FName AEnemyAIController2::PatrolPosKey(TEXT("PatrolPos"));
+const FName AEnemyAIController2::TargetKey(TEXT("Target"));
+const FName AEnemyAIController2::TargetPosKey(TEXT("TargetPos"));
+const FName AEnemyAIController2::bCanAttackKey(TEXT("bCanAttack"));
 
 
-AEnemy_AIController::AEnemy_AIController()
+AEnemyAIController2::AEnemyAIController2()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
 	SightConfig = CreateDefaultSubobject<UAISenseConfig_Sight>(TEXT("Sight_Config"));
 	SetPerceptionComponent(*CreateDefaultSubobject<UAIPerceptionComponent>(TEXT("Perception Component")));
-	
+
 	SightConfig->SightRadius = AISightRadius;
 	SightConfig->LoseSightRadius = AILoseSightRadius;
 	SightConfig->PeripheralVisionAngleDegrees = AIFieldOfView;
@@ -35,7 +34,7 @@ AEnemy_AIController::AEnemy_AIController()
 	SightConfig->DetectionByAffiliation.bDetectNeutrals = true;
 
 	GetPerceptionComponent()->SetDominantSense(*SightConfig->GetSenseImplementation());
-	GetPerceptionComponent()->OnPerceptionUpdated.AddDynamic(this, &AEnemy_AIController::OnDetected);
+	GetPerceptionComponent()->OnPerceptionUpdated.AddDynamic(this, &AEnemyAIController2::OnDetected);
 	GetPerceptionComponent()->ConfigureSense(*SightConfig);
 
 
@@ -53,11 +52,11 @@ AEnemy_AIController::AEnemy_AIController()
 	RepeatIntervar = 3.0f;
 }
 
-void AEnemy_AIController::OnPossess(APawn* InPawn)
+void AEnemyAIController2::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
 	//GetWorld()->GetTimerManager().SetTimer(ReapeatTimeHandler, this, &AEnemy_AIController::OnRepeatTimer, RepeatIntervar, true);
-	
+
 	if (UseBlackboard(BBAsset, Blackboard)) {
 		Blackboard->SetValueAsVector(HomePosKey, InPawn->GetActorLocation());
 
@@ -68,13 +67,13 @@ void AEnemy_AIController::OnPossess(APawn* InPawn)
 
 }
 
-void AEnemy_AIController::OnUnPossess()
+void AEnemyAIController2::OnUnPossess()
 {
 	Super::OnUnPossess();
 	//GetWorld()->GetTimerManager().ClearTimer(ReapeatTimeHandler);
 }
 
-void AEnemy_AIController::BeginPlay()
+void AEnemyAIController2::BeginPlay()
 {
 	Super::BeginPlay();
 	if (GetPerceptionComponent() != nullptr) {
@@ -86,17 +85,17 @@ void AEnemy_AIController::BeginPlay()
 
 }
 
-void AEnemy_AIController::Tick(float DeltaTime)
+void AEnemyAIController2::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 }
 
-ATPS_Character* AEnemy_AIController::GetPlayer()
+ATPS_Character* AEnemyAIController2::GetPlayer()
 {
 	return Player;
 }
 
-void AEnemy_AIController::OnDetected(const TArray<AActor*> &DetectedActor)
+void AEnemyAIController2::OnDetected(const TArray<AActor*>& DetectedActor)
 {
 	//Player = nullptr;
 
@@ -109,12 +108,7 @@ void AEnemy_AIController::OnDetected(const TArray<AActor*> &DetectedActor)
 	}
 }
 
-void AEnemy_AIController::Setplayer(class ATPS_Character* _player)
-{
-	Player = _player;
-}
-
-void AEnemy_AIController::OnRepeatTimer()
+void AEnemyAIController2::OnRepeatTimer()
 {
 
 	auto CurrentPawn = GetPawn();
@@ -135,6 +129,6 @@ void AEnemy_AIController::OnRepeatTimer()
 
 
 
-	
+
 
 }

@@ -24,15 +24,17 @@ bool UBTDecorator_IsinAttackRange::CalculateRawConditionValue(UBehaviorTreeCompo
 
 	if (Target == nullptr) return false;
 
+	if (!Enemy) return false;
+
 	float AttackRange = Enemy->GetAttackRange();
 
 	bResult = (Target->GetDistanceTo(ControllingPawn) <= AttackRange);
 
 
-	if (bResult)
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, FString::Printf(TEXT("Distance = true : %f"), Target->GetDistanceTo(ControllingPawn)));
+	/*if (bResult)
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, FString::Printf(TEXT("Find  = true : %f"), Target->GetDistanceTo(ControllingPawn)));
 	else
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, FString::Printf(TEXT("Distance = false : %f"), Target->GetDistanceTo(ControllingPawn)));
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Not Find = false : %f"), Target->GetDistanceTo(ControllingPawn)));*/
 
 	return bResult;
 }

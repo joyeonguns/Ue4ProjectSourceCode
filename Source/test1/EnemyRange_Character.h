@@ -39,6 +39,8 @@ public:
 
 	void DropArrow();
 
+	virtual float TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
+
 private:
 
 	UPROPERTY(EditDefaultsOnly, Category = arrows)

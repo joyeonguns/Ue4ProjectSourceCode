@@ -13,6 +13,7 @@
  */
 
 DECLARE_MULTICAST_DELEGATE(FOnAttackEndDelegate);
+DECLARE_MULTICAST_DELEGATE(FOnDeadDelegate);
 
 UCLASS()
 class TEST1_API AEnemyBasic_Character : public ABasic_Character
@@ -22,7 +23,7 @@ class TEST1_API AEnemyBasic_Character : public ABasic_Character
 public:
 	AEnemyBasic_Character();
 
-	void SpawnDamage(float damage);
+	void SpawnDamage(float damage, bool critical);
 	void Set_HpBar();
 	void DrawHpBar();
 	void Delete_HpBar();
@@ -36,11 +37,21 @@ public:
 	virtual void Attack();
 
 	virtual void AttackEnd() override;
+	
+	virtual void DieCharacter() override;
+
 	FOnAttackEndDelegate OnAttackEnd;
+	FOnDeadDelegate OnDeadDelegate;
 
 	virtual void AttackCheck();
 
 	float GetAttackRange();
+
+	void CharacterDead();
+
+	void SetPrize(int32 newPrize);
+
+	int32 GetPrize();
 
 protected:
 	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
@@ -63,8 +74,10 @@ protected:
 	UPROPERTY(EditAnywhere, Category = Attack)
 		float AttackRadius;
 
+	bool bAttacking;
+
 private:
-	
+	int32 prize = 1;
 
 
 public: 

@@ -28,6 +28,11 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void PostInitializeComponents() override;
 
+	virtual void OnHit(float InputDamage, struct FDamageEvent const& DamageEvent, class APawn* PawnInstigator, class AActor* DamageCauser);
+	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
+
+
+
 	UPROPERTY(EditAnywhere, Category=HP)
 	float myHealth;
 
@@ -43,6 +48,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = Anim)
 		UAnimMontage* BeHit_AnimMontage;
+
+	UPROPERTY(EditAnywhere, Category = Anim)
+		UAnimMontage* BeElectric_AnimMontage;
 
 	UPROPERTY(EditAnywhere, Category = Anim)
 		UAnimMontage* Dash_AnimMontage;
@@ -71,13 +79,65 @@ protected:
 	bool bShocking;
 	float shockTime;
 
+	bool bDead;
+
+	bool broll;
+
 	int32 MaxCombo;
 	int32 currentCombo;
 
+	// 오라 스폰 클래스
+	UPROPERTY(EditAnywhere, Category = Aura)
+		TSubclassOf<AActor> ArcaneAuraClass;
+	UPROPERTY(EditAnywhere, Category = Aura)
+		TSubclassOf<AActor> HeartAuraClass;
+	UPROPERTY(EditAnywhere, Category = Aura)
+		TSubclassOf<AActor> ShieldeAuraClass;
+	UPROPERTY(EditAnywhere, Category = Aura)
+		TSubclassOf<AActor> DiaAuraClass;
+	UPROPERTY(EditAnywhere, Category = Aura)
+		TSubclassOf<AActor> EnergyAuraClass;
 
-	virtual void OnHit(float InputDamage, struct FDamageEvent const& DamageEvent, class APawn* PawnInstigator, class AActor* DamageCauser);
-	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
-	//void TakeDamage();
+	class AActor* ApplyAuraInstance;
+
+	UPROPERTY(EditAnywhere, Category = Aura)
+		TSubclassOf<AActor> BurnDebuffClass;
+	UPROPERTY(EditAnywhere, Category = Aura)
+		TSubclassOf<AActor> ElectricDebuffClass;
+	UPROPERTY(EditAnywhere, Category = Aura)
+		TSubclassOf<AActor> WetDebuffClass;
+
+	class AActor* ApplyDebuffAuraInstance;
+
+	// 전투 데이터
+	float realMoveSpeed;
+
+	float Move_Speed = 1.0;
+	float Attack_Speed = 1.0;
+	int32 Skill_Acceleration = 0;
+
+	const int32 AddSpeed = 20;
+	const int32 AddLife = 1;
+	const int32 AddShield = 5;
+	const float AddRecoverHp = 0.8f;
+	const float DefaultRunSpeed = 600;
+	const float DefaultWalkSpeed = 300;
+
+	bool bBurnning;
+	bool bElectric;
+	bool bWetting;
+
+	float BurnTime;
+	float ElectricTime;
+	float WetTime;
+
+	float WetDebuff = 0;
+
+	const float DefaultBurnTime = 5.0f;
+	const float DefaultElectricTime = 5.0f;
+	const float DefaultWetTime = 10.0f;
+
+	int32 ApplyBuffCode;
 
 
 public:	
@@ -87,7 +147,8 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	void DieCharacter();
+	UFUNCTION()
+	virtual void DieCharacter();
 
 	void DestroyCharacter();
 
@@ -95,12 +156,61 @@ public:
 		class UCharacter_Stat_Component* Status_Component;
 	
 
-	void DefaultAttack();
+	void DefaultAttack(float speed);
 
 	virtual void AttackEnd();
 	
-	void TakeShock();
+	virtual void TakeShock();
 	void EndShock();
 
 	bool GetCheckShocking();
+
+	void SetMoveSpeed();
+
+	bool GetbDead();
+
+
+	// Buff
+	virtual void ApplyBuff_Heart();
+
+	virtual void ApplyBuff_Energy();
+
+	virtual void ApplyBuff_Arcane();
+
+	virtual void ApplyBuff_Dia();
+
+	virtual void ApplyBuff_Shield();
+
+
+	virtual void ResetBuff();
+
+	UFUNCTION()
+	void ResetAura();
+
+	void SpwAura(TSubclassOf<AActor> AuraClass);
+
+	// DeBuff
+	void DebuffTick(float deltaTime);
+
+	void SpwnDebuffAura(TSubclassOf<AActor> AuraClass);
+	void ResetDebuffAura();
+
+	void GetDeBuff_Burn();
+	void GetDeBuff_Electric();
+	void GetDeBuff_Wet();
+
+	void ApplyDeBuff_Burn();
+	void ApplyDeBuff_Electric();
+	void ApplyDeBuff_Wet();
+
+	void DifuseBuff();
+
+
+private:
+	FTimerHandle TH_burn;
+	FTimerHandle TH_elec;
+	FTimerHandle TH_wet;
+
+	
+
 };

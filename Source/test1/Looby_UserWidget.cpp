@@ -75,20 +75,6 @@ void ULooby_UserWidget::NativeConstruct()
 	BTN_AddStat_5->OnClicked.AddDynamic(this, &ULooby_UserWidget::OnClicked_AddStatBTN_5);
 
 
-	BTN_DecStat_6 = Cast<UButton>(GetWidgetFromName(TEXT("Button-_Stat_6")));
-	BTN_AddStat_6 = Cast<UButton>(GetWidgetFromName(TEXT("Button_+_Stat_6")));
-	Text_NumStat_6 = Cast<UTextBlock>(GetWidgetFromName(TEXT("TextBlock_Stat_6")));
-
-	BTN_DecStat_6->OnClicked.AddDynamic(this, &ULooby_UserWidget::OnClicked_DesStatBTN_6);
-	BTN_AddStat_6->OnClicked.AddDynamic(this, &ULooby_UserWidget::OnClicked_AddStatBTN_6);
-
-
-	BTN_DecStat_7 = Cast<UButton>(GetWidgetFromName(TEXT("Button-_Stat_7")));
-	BTN_AddStat_7 = Cast<UButton>(GetWidgetFromName(TEXT("Button_+_Stat_7")));
-	Text_NumStat_7 = Cast<UTextBlock>(GetWidgetFromName(TEXT("TextBlock_Stat_7")));
-
-	BTN_DecStat_7->OnClicked.AddDynamic(this, &ULooby_UserWidget::OnClicked_DesStatBTN_7);
-	BTN_AddStat_7->OnClicked.AddDynamic(this, &ULooby_UserWidget::OnClicked_AddStatBTN_7);
 
 
 
@@ -96,37 +82,32 @@ void ULooby_UserWidget::NativeConstruct()
 
 
 
-	// WeaponBookPage
-	Img_Weapon_0 = Cast<UImage>(GetWidgetFromName(TEXT("Image_Weapon_0")));
-	Img_Weapon_1 = Cast<UImage>(GetWidgetFromName(TEXT("Image_Weapon_1")));
-	Img_Weapon_2 = Cast<UImage>(GetWidgetFromName(TEXT("Image_Weapon_2")));
-	Img_Weapon_3 = Cast<UImage>(GetWidgetFromName(TEXT("Image_Weapon_3")));
-	Img_Weapon_4 = Cast<UImage>(GetWidgetFromName(TEXT("Image_Weapon_4")));
-	Img_Weapon_5 = Cast<UImage>(GetWidgetFromName(TEXT("Image_Weapon_5")));
-	Img_Weapon_6 = Cast<UImage>(GetWidgetFromName(TEXT("Image_Weapon_6")));
-	Img_Weapon_7 = Cast<UImage>(GetWidgetFromName(TEXT("Image_Weapon_7")));
-	Img_Weapon_8 = Cast<UImage>(GetWidgetFromName(TEXT("Image_Weapon_8")));
-	Img_Weapon_9 = Cast<UImage>(GetWidgetFromName(TEXT("Image_Weapon_9")));
-	Img_Weapon_10 = Cast<UImage>(GetWidgetFromName(TEXT("Image_Weapon_10")));
-	Img_Weapon_11 = Cast<UImage>(GetWidgetFromName(TEXT("Image_Weapon_11")));
-	Img_Weapon_12 = Cast<UImage>(GetWidgetFromName(TEXT("Image_Weapon_12")));
-	Img_Weapon_13 = Cast<UImage>(GetWidgetFromName(TEXT("Image_Weapon_13")));
-	Img_Weapon_14 = Cast<UImage>(GetWidgetFromName(TEXT("Image_Weapon_14")));
-	WeaponBook.Add(Img_Weapon_0);
-	WeaponBook.Add(Img_Weapon_1);
-	WeaponBook.Add(Img_Weapon_2);
-	WeaponBook.Add(Img_Weapon_3);
-	WeaponBook.Add(Img_Weapon_4);
-	WeaponBook.Add(Img_Weapon_5);
-	WeaponBook.Add(Img_Weapon_6);
-	WeaponBook.Add(Img_Weapon_7);
-	WeaponBook.Add(Img_Weapon_8);
-	WeaponBook.Add(Img_Weapon_9);
-	WeaponBook.Add(Img_Weapon_10);
-	WeaponBook.Add(Img_Weapon_11);
-	WeaponBook.Add(Img_Weapon_12);
-	WeaponBook.Add(Img_Weapon_13);
-	WeaponBook.Add(Img_Weapon_14);
+	//// WeaponBookPage
+	//Img_Weapon_0 = Cast<UImage>(GetWidgetFromName(TEXT("Image_Weapon_0")));
+	//Img_Weapon_1 = Cast<UImage>(GetWidgetFromName(TEXT("Image_Weapon_1")));
+	//Img_Weapon_2 = Cast<UImage>(GetWidgetFromName(TEXT("Image_Weapon_2")));
+	//Img_Weapon_3 = Cast<UImage>(GetWidgetFromName(TEXT("Image_Weapon_3")));
+	//Img_Weapon_4 = Cast<UImage>(GetWidgetFromName(TEXT("Image_Weapon_4")));
+	//Img_Weapon_5 = Cast<UImage>(GetWidgetFromName(TEXT("Image_Weapon_5")));
+	//Img_Weapon_6 = Cast<UImage>(GetWidgetFromName(TEXT("Image_Weapon_6")));
+	//Img_Weapon_7 = Cast<UImage>(GetWidgetFromName(TEXT("Image_Weapon_7")));
+	//Img_Weapon_8 = Cast<UImage>(GetWidgetFromName(TEXT("Image_Weapon_8")));
+	//Img_Weapon_9 = Cast<UImage>(GetWidgetFromName(TEXT("Image_Weapon_9")));
+	//Img_Weapon_10 = Cast<UImage>(GetWidgetFromName(TEXT("Image_Weapon_10")));
+	//Img_Weapon_11 = Cast<UImage>(GetWidgetFromName(TEXT("Image_Weapon_11")));
+
+	//WeaponBook.Add(Img_Weapon_0);
+	//WeaponBook.Add(Img_Weapon_1);
+	//WeaponBook.Add(Img_Weapon_2);
+	//WeaponBook.Add(Img_Weapon_3);
+	//WeaponBook.Add(Img_Weapon_4);
+	//WeaponBook.Add(Img_Weapon_5);
+	//WeaponBook.Add(Img_Weapon_6);
+	//WeaponBook.Add(Img_Weapon_7);
+	//WeaponBook.Add(Img_Weapon_8);
+	//WeaponBook.Add(Img_Weapon_9);
+	//WeaponBook.Add(Img_Weapon_10);
+	//WeaponBook.Add(Img_Weapon_11);
 
 
 
@@ -147,7 +128,9 @@ void ULooby_UserWidget::NativeConstruct()
 	OnClicked_SelectWeapon_0();
 	OnClicked_GoStatBTN();
 	TakeStatusArray();
-	point = 999999;
+
+	//point = 999999;
+	
 	SetStatState();
 
 	inactiveColor.R = 1.0f;
@@ -160,13 +143,13 @@ void ULooby_UserWidget::NativeConstruct()
 	activeColor.B = 1.0f;
 	activeColor.A = 0.5f;
 
-	for (int i = 0; i < 15; i++) {
+	/*for (int i = 0; i < 12; i++) {
 		WeaponBook[i]->SetColorAndOpacity(FLinearColor::Black);
 	}
 	for (int i = 0; i < UnLockArray.Num(); i++) {
 		int n = UnLockArray[i];
 		WeaponBook[n]->SetColorAndOpacity(FLinearColor::White);
-	}
+	}*/
 }
 
 //***** Top Button *******
@@ -226,153 +209,267 @@ void ULooby_UserWidget::SetStatState()
 	Text_NumStat_3->SetText(FText::AsNumber(statusArray[3]));
 	Text_NumStat_4->SetText(FText::AsNumber(statusArray[4]));
 	Text_NumStat_5->SetText(FText::AsNumber(statusArray[5]));
-	Text_NumStat_6->SetText(FText::AsNumber(statusArray[6]));
-	Text_NumStat_7->SetText(FText::AsNumber(statusArray[7]));
+	/*Text_NumStat_6->SetText(FText::AsNumber(statusArray[6]));
+	Text_NumStat_7->SetText(FText::AsNumber(statusArray[7]));*/
 
 	poinText->SetText(FText::AsNumber(point));
 }
 
 void ULooby_UserWidget::OnClicked_AddStatBTN_0()
 {
-	if (statusArray[0] < 5 && pow(10, statusArray[0])) {
-		point -= pow(10, statusArray[0]);
+	int32 price = pow(10, statusArray[0]);
+
+	if (statusArray[0] < 5 && point > price) {
+		point -= price;
 		statusArray[0] = statusArray[0] + 1;
 		SetStatState();
-	}
+
+		BTN_DecStat_0->SetIsEnabled(true);
+		if (statusArray[0] == 5) {
+			BTN_AddStat_0->SetIsEnabled(false);
+		}
+	}	
 }
 
 void ULooby_UserWidget::OnClicked_DesStatBTN_0()
 {
+	int32 price = pow(10, statusArray[0] - 1);
+
 	if (statusArray[0] > 0) {
 		statusArray[0] = statusArray[0] - 1;
-		point += pow(10, statusArray[0]);
+		point += price;
 		SetStatState();
+
+		BTN_AddStat_0->SetIsEnabled(true);
+		if (statusArray[0] == 0) {
+			BTN_DecStat_0->SetIsEnabled(false);
+		}
 	}
 }
 
 void ULooby_UserWidget::OnClicked_AddStatBTN_1()
 {
-	if (statusArray[1] < 5 && pow(10, statusArray[1])) {
-		point -= pow(10, statusArray[1]);
+	int32 price = pow(10, statusArray[1]);
+
+	if (statusArray[1] < 5 && point > price) {
+		point -= price;
 		statusArray[1] = statusArray[1] + 1;
 		SetStatState();
+
+		BTN_DecStat_1->SetIsEnabled(true);
+		if (statusArray[1] == 5) {
+			BTN_AddStat_1->SetIsEnabled(false);
+		}
 	}
 }
 
 void ULooby_UserWidget::OnClicked_DesStatBTN_1()
 {
+	int32 price = pow(10, statusArray[1] - 1);
+
 	if (statusArray[1] > 0) {
 		statusArray[1] = statusArray[1] - 1;
-		point += pow(10, statusArray[1]);
+		point += price;
 		SetStatState();
+
+		BTN_AddStat_1->SetIsEnabled(true);
+		if (statusArray[1] == 0) {
+			BTN_DecStat_1->SetIsEnabled(false);
+		}
 	}
 }
 
 void ULooby_UserWidget::OnClicked_AddStatBTN_2()
 {
-	if (statusArray[2] < 5 && pow(10, statusArray[2])) {
-		point -= pow(10, statusArray[2]);
+	int32 price = pow(10, statusArray[2]);
+
+	if (statusArray[2] < 5 && point > price) {
+		point -= price;
 		statusArray[2] = statusArray[2] + 1;
 		SetStatState();
+
+		BTN_DecStat_2->SetIsEnabled(true);
+		if (statusArray[2] == 5) {
+			BTN_AddStat_2->SetIsEnabled(false);
+		}
 	}
 }
 
 void ULooby_UserWidget::OnClicked_DesStatBTN_2()
 {
+	int32 price = pow(10, statusArray[2] - 1);
+
 	if (statusArray[2] > 0) {
 		statusArray[2] = statusArray[2] - 1;
-		point += pow(10, statusArray[2]);
+		point += price;
 		SetStatState();
+
+		BTN_AddStat_2->SetIsEnabled(true);
+		if (statusArray[2] == 0) {
+			BTN_DecStat_2->SetIsEnabled(false);
+		}
 	}
 }
 
 void ULooby_UserWidget::OnClicked_AddStatBTN_3()
 {
-	if (statusArray[3] < 5 && pow(10, statusArray[3])) {
-		point -= pow(10, statusArray[3]);
+	int32 price = pow(10, statusArray[3]);
+
+	if (statusArray[3] < 5 && point > price) {
+		point -= price;
 		statusArray[3] = statusArray[3] + 1;
 		SetStatState();
+
+		BTN_DecStat_3->SetIsEnabled(true);
+		if (statusArray[3] == 5) {
+			BTN_AddStat_3->SetIsEnabled(false);
+		}
 	}
 }
 
 void ULooby_UserWidget::OnClicked_DesStatBTN_3()
 {
+	int32 price = pow(10, statusArray[3] - 1);
+	
 	if (statusArray[3] > 0) {
 		statusArray[3] = statusArray[3] - 1;
-		point += pow(10, statusArray[3]);
+		point += price;
 		SetStatState();
+
+		BTN_AddStat_3->SetIsEnabled(true);
+		if (statusArray[3] == 0) {
+			BTN_DecStat_3->SetIsEnabled(false);
+		}
 	}
 }
 
 void ULooby_UserWidget::OnClicked_AddStatBTN_4()
 {
-	if (statusArray[4] < 5 && pow(10, statusArray[4])) {
-		point -= pow(10, statusArray[4]);
+	int32 price = pow(10, statusArray[4]);
+
+	if (statusArray[4] < 5 && point > price) {
+		point -= price;
 		statusArray[4] = statusArray[4] + 1;
 		SetStatState();
+
+		BTN_DecStat_4->SetIsEnabled(true);
+		if (statusArray[4] == 5) {
+			BTN_AddStat_4->SetIsEnabled(false);
+		}
 	}
 }
 
 void ULooby_UserWidget::OnClicked_DesStatBTN_4()
 {
+	int32 price = pow(10, statusArray[4] - 1);
+
 	if (statusArray[4] > 0) {
 		statusArray[4] = statusArray[4] - 1;
-		point += pow(10, statusArray[4]);
+		point += price;
 		SetStatState();
+
+		BTN_AddStat_4->SetIsEnabled(true);
+		if (statusArray[4] == 0) {
+			BTN_DecStat_4->SetIsEnabled(false);
+		}
 	}
 }
 
 void ULooby_UserWidget::OnClicked_AddStatBTN_5()
 {
-	if (statusArray[5] < 5 && pow(10, statusArray[5])) {
-		point -= pow(10, statusArray[5]);
+	int32 price = pow(10, statusArray[5]);
+
+	if (statusArray[5] < 5 && point > price) {
+		point -= price;
 		statusArray[5] = statusArray[5] + 1;
 		SetStatState();
+
+		BTN_DecStat_5->SetIsEnabled(true);
+		if (statusArray[5] == 5) {
+			BTN_AddStat_5->SetIsEnabled(false);
+		}
 	}
 }
 
 void ULooby_UserWidget::OnClicked_DesStatBTN_5()
 {
+	int32 price = pow(10, statusArray[5] - 1);
+
 	if (statusArray[5] > 0) {
 		statusArray[5] = statusArray[5] - 1;
-		point += pow(10, statusArray[5]);
+		point += price;
 		SetStatState();
+
+		BTN_AddStat_5->SetIsEnabled(true);
+		if (statusArray[5] == 0) {
+			BTN_DecStat_5->SetIsEnabled(false);
+		}
 	}
 }
 
 void ULooby_UserWidget::OnClicked_AddStatBTN_6()
 {
-	if (statusArray[6] < 5 && pow(10, statusArray[6])) {
-		point -= pow(10, statusArray[6]);
+	int32 price = pow(10, statusArray[6]);
+
+	if (statusArray[6] < 5 && point > price) {
+		point -= price;
 		statusArray[6] = statusArray[6] + 1;
 		SetStatState();
+
+		BTN_DecStat_6->SetIsEnabled(true);
+		if (statusArray[6] == 5) {
+			BTN_AddStat_6->SetIsEnabled(false);
+		}
 	}
 }
 
 void ULooby_UserWidget::OnClicked_DesStatBTN_6()
 {
+	int32 price = pow(10, statusArray[6] - 1);
+
+
 	if (statusArray[6] > 0) {
 		statusArray[6] = statusArray[6] - 1;
-		point += pow(10, statusArray[6]);
+		point += price;
 		SetStatState();
+
+		BTN_AddStat_6->SetIsEnabled(true);
+		if (statusArray[6] == 0) {
+			BTN_DecStat_6->SetIsEnabled(false);
+		}
 	}
 }
 
 void ULooby_UserWidget::OnClicked_AddStatBTN_7()
 {
-	if (statusArray[7] < 5 && pow(10, statusArray[7])) {
-		point -= pow(10, statusArray[7]);
+	int32 price = pow(10, statusArray[7]);
+
+
+	if (statusArray[7] < 5 && point > price) {
+		point -= price;
 		statusArray[7] = statusArray[7] + 1;
 		SetStatState();
+
+		BTN_DecStat_7->SetIsEnabled(true);
+		if (statusArray[7] == 5) {
+			BTN_AddStat_7->SetIsEnabled(false);
+		}
 	}
 }
 
 void ULooby_UserWidget::OnClicked_DesStatBTN_7()
 {
+	int32 price = pow(10, statusArray[7]-1);
+
 	if (statusArray[7] > 0) {
 		statusArray[7] = statusArray[7] - 1;
-		point += pow(10, statusArray[7]);
+		point += price;
 		SetStatState();
+
+		BTN_AddStat_7->SetIsEnabled(true);
+		if (statusArray[7] == 0) {
+			BTN_DecStat_7->SetIsEnabled(false);
+		}
 	}
 }
 
@@ -385,6 +482,8 @@ void ULooby_UserWidget::TakeStatusArray()
 		statusArray.Init(1, 8);
 		statusArray = gameinstance->statusArray;
 		UnLockArray = gameinstance->UnLockItemList;
+
+		point = gameinstance->Point;
 	}
 	
 }
@@ -408,7 +507,7 @@ void ULooby_UserWidget::OnClicked_GameStart()
 
 void ULooby_UserWidget::OnClicked_SelectWeapon_0()
 {	
-	SelectWeaponCode = 0;
+	SelectWeaponCode = 1;
 	BTN_SelectWeapon_0->SetRenderOpacity(1.0f);
 	BTN_SelectWeapon_1->SetRenderOpacity(0.4f);
 	BTN_SelectWeapon_2->SetRenderOpacity(0.4f);
@@ -416,7 +515,7 @@ void ULooby_UserWidget::OnClicked_SelectWeapon_0()
 
 void ULooby_UserWidget::OnClicked_SelectWeapon_1()
 {
-	SelectWeaponCode = 1;
+	SelectWeaponCode = 2;
 	BTN_SelectWeapon_0->SetRenderOpacity(0.4f);
 	BTN_SelectWeapon_1->SetRenderOpacity(1.0f); 
 	BTN_SelectWeapon_2->SetRenderOpacity(0.4f);
@@ -424,7 +523,7 @@ void ULooby_UserWidget::OnClicked_SelectWeapon_1()
 
 void ULooby_UserWidget::OnClicked_SelectWeapon_2()
 {
-	SelectWeaponCode = 2;
+	SelectWeaponCode = 3;
 	BTN_SelectWeapon_0->SetRenderOpacity(0.4f);
 	BTN_SelectWeapon_1->SetRenderOpacity(0.4f);
 	BTN_SelectWeapon_2->SetRenderOpacity(1.0f);

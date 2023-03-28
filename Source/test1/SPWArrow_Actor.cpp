@@ -36,8 +36,6 @@ void ASPWArrow_Actor::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	if (bIsShutt) {
-		//SetActorRotation(rot);
-		//FVector dir = MyOwner->GetActorForwardVector() * 20;
 		SetActorLocation(GetActorLocation() + dir*20);
 
 	}
@@ -48,19 +46,29 @@ void ASPWArrow_Actor::NotifyActorBeginOverlap(AActor* OtherActor)
 	if (OtherActor->IsA(AActor::StaticClass())) {
 		auto target = Cast<ABasic_Character>(OtherActor);
 		if (target) {
-			if (MyOwner != target) {
-				UGameplayStatics::ApplyDamage(OtherActor, 10.0f, NULL, this, UDamageType::StaticClass());
+			if (MyOwner != target && bIsShutt) {
+				UGameplayStatics::ApplyDamage(OtherActor, 10.0f, NULL, MyOwner, UDamageType::StaticClass());
 				GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Damage : 10"));
+				Destroy();
 
-				//bIsShutt = false;
-				//ArrowCollision->SetSimulatePhysics(false);
-				//RootComponent->AttachToComponent(target->GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale);
 			}
 		}
+		
 
 	}
-
+	else {
+		//bIsShutt = false;
+		//ArrowCollision->SetSimulatePhysics(false);
+		
+	}
 	
+}
+
+void ASPWArrow_Actor::NotifyHit(UPrimitiveComponent* MyComp, AActor* Other, UPrimitiveComponent* OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit)
+{
+	//DestroyObj();
+	bIsShutt = false;
+	ArrowCollision->SetSimulatePhysics(false);
 }
 
 void ASPWArrow_Actor::ApplyAttack()
@@ -87,27 +95,34 @@ void ASPWArrow_Actor::Attaching(FName AttachName)
 		if (OwnerRange) {
 			USkeletalMeshComponent* PawnMessh = OwnerRange->GetSpecificPawnMesh();
 
-			//FName AttackPoint = MyOwner->GetWeaponAttachPoint();
-			//ArrowMesh->AttachTo();
 			RootComponent->AttachToComponent(PawnMessh, FAttachmentTransformRules::SnapToTargetIncludingScale, AttachName);
 
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Attaching"));
+			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Attaching"));
 		}
 		
 	}
 }
 
-void ASPWArrow_Actor::Shutting()
+void ASPWArrow_Actor::Shootting()
 {
+	if (!MyOwner) return;
+
 	rot = GetActorRotation();
 	ArrowCollision->SetSimulatePhysics(true);
 	ArrowCollision->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
 
-	float Aimadd = FVector::Distance(TargetLocation, GetActorLocation()) / 6.f;
+	if (Targets) {
+		TargetLocation = Targets->GetActorLocation();
 
-	dir = (TargetLocation + FVector(0,0, Aimadd) - GetActorLocation()).GetSafeNormal();
+		float Aimadd = FVector::Distance(TargetLocation, GetActorLocation()) / 6.f;
 
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("loc : %f, %f, %f"), GetActorLocation().X, GetActorLocation().Y, GetActorLocation().Z) );
+		dir = (TargetLocation + FVector(0, 0, Aimadd) - GetActorLocation()).GetSafeNormal();
+	}
+	else {
+		if(MyOwner)
+			dir = MyOwner->GetActorForwardVector();
+	}
+
 }
 
 void ASPWArrow_Actor::SetOwner(ABasic_Character* own)
@@ -118,6 +133,16 @@ void ASPWArrow_Actor::SetOwner(ABasic_Character* own)
 void ASPWArrow_Actor::SetTargetLocation(FVector targetLoc)
 {
 	TargetLocation = targetLoc;
+}
+
+void ASPWArrow_Actor::SetTargetPawn(class ATPS_Character* target)
+{
+	Targets = target;
+}
+
+void ASPWArrow_Actor::SetDamage(float _damage)
+{
+	Damage = _damage;
 }
 
 

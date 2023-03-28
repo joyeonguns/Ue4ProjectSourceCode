@@ -25,8 +25,8 @@ void ATPSPlayerController::BeginPlay()
 
 		auto player = Cast<ATPS_Character>(this->GetPawn());
 		if (player) {
-			int32 itemcode = gameinstance->SelectedWeaponCode;
-			player->SpawnDefaultInventory(itemcode);
+			//int32 itemcode = gameinstance->SelectedWeaponCode;
+			player->SpawnDefaultInventory(0);
 		}
 	}
 
@@ -38,6 +38,7 @@ void ATPSPlayerController::BeginPlay()
 
 	
 }
+
 
 UHUD_UserWidget* ATPSPlayerController::GetHUD()
 {
@@ -58,14 +59,34 @@ void ATPSPlayerController::OpenHUD()
 	}
 }
 
+void ATPSPlayerController::InputKeyESC()
+{
+	OpenInGameMenu();
+
+	//if (bOpenInGameMenu) {
+	//	bOpenInGameMenu = false;
+	//	CloseInGameMenu();
+	//}
+	//else {
+	//	bOpenInGameMenu = true;
+	//	OpenInGameMenu();
+	//}	
+	//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Blue, FString::Printf(TEXT("InputKeyESC ")));
+
+}
+
 void ATPSPlayerController::OpenInGameMenu()
 {
-	InGameMenu_Instance = CreateWidget<UIngameMenu_UserWidget>(this, InGameMenu_Class);
+	if (!InGameMenu_Instance) {
+		InGameMenu_Instance = CreateWidget<UIngameMenu_UserWidget>(this, InGameMenu_Class);
+	}
+
+
 	if (InGameMenu_Instance) {
 		InGameMenu_Instance->AddToViewport();
-
 		UGameplayStatics::SetGamePaused(GetWorld(), true);
-		FInputModeUIOnly Mode;
+
+		FInputModeGameAndUI Mode;
 		SetInputMode(Mode);
 		bShowMouseCursor = true;
 	}
@@ -90,6 +111,95 @@ void ATPSPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
 
-	InputComponent->BindAction(TEXT("ESC"), IE_Pressed, this, &ATPSPlayerController::OpenInGameMenu);
+	InputComponent->BindAction(TEXT("ESC"), IE_Pressed, this, &ATPSPlayerController::InputKeyESC);
+	InputComponent->BindAction(TEXT("TAP"), IE_Pressed, this, &ATPSPlayerController::InputKeyTap);
 
 }
+
+void ATPSPlayerController::HUDCoolDownUpdate(float Def_CoolTime_Q, float currentCoolTime_Q,
+	float Def_CoolTime_E, float currentCoolTime_E,
+	float Def_CoolTime_1, float currentCoolTime_1,
+	float Def_CoolTime_2, float currentCoolTime_2)
+{
+	if (Hud) {
+		Hud->SetProgressBar_Skill_Q(currentCoolTime_Q / Def_CoolTime_Q, Def_CoolTime_Q - currentCoolTime_Q);
+		Hud->SetProgressBar_Skill_E(currentCoolTime_E / Def_CoolTime_E, Def_CoolTime_E - currentCoolTime_E);
+		Hud->SetProgressBar_Item_1(currentCoolTime_1 / Def_CoolTime_1, Def_CoolTime_1 - currentCoolTime_1);
+		Hud->SetProgressBar_Item_2(currentCoolTime_2 / Def_CoolTime_2, Def_CoolTime_2 - currentCoolTime_2);
+	}
+	else {
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("Hud not find"));
+	}
+}
+
+void ATPSPlayerController::OpenInteractionUI()
+{
+	InteractionUI_Instance = CreateWidget<UUserWidget>(this, InteractionUI_Class);
+
+	if (InteractionUI_Instance) {
+		InteractionUI_Instance->AddToViewport();
+	}
+	else {
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("Menu not find"));
+	}
+}
+
+void ATPSPlayerController::CloseInteractionUI()
+{
+	auto player = Cast<ATPS_Character>(this->GetPawn());
+	if (InteractionUI_Instance && !player->GetbDead()) {
+		InteractionUI_Instance->RemoveFromParent();
+	}
+}
+
+void ATPSPlayerController::InputKeyTap()
+{
+	OpenInGameData();
+}
+
+void ATPSPlayerController::OpenInGameData()
+{
+	if (!StageDatawidget_Instance) {
+		StageDatawidget_Instance = CreateWidget<UUserWidget_InGameData>(this, StageDatawidget_Class);
+		if (StageDatawidget_Instance) {
+			StageDatawidget_Instance->DefaultUISetting();
+			StageDatawidget_Instance->OnExitInGameDataWidget.Clear();
+			StageDatawidget_Instance->OnExitInGameDataWidget.AddUObject(this, &ATPSPlayerController::CloseInGameData);
+
+			StageDatawidget_Instance->AddToViewport();
+
+			CloseInGameData();
+		}
+	}
+
+
+	if (StageDatawidget_Instance) {
+		StageDatawidget_Instance->DefaultUISetting();
+		StageDatawidget_Instance->OnExitInGameDataWidget.Clear();
+		StageDatawidget_Instance->OnExitInGameDataWidget.AddUObject(this, &ATPSPlayerController::CloseInGameData);
+
+		StageDatawidget_Instance->AddToViewport();
+
+		UGameplayStatics::SetGamePaused(GetWorld(), true);
+
+		FInputModeGameAndUI Mode;
+		SetInputMode(Mode);
+		bShowMouseCursor = true;
+	}
+	else {
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("Menu not find"));
+	}
+}
+
+void ATPSPlayerController::CloseInGameData()
+{
+	if (StageDatawidget_Instance) {
+		StageDatawidget_Instance->RemoveFromParent();
+
+		FInputModeGameOnly Mode;
+		SetInputMode(Mode);
+		bShowMouseCursor = false;
+		UGameplayStatics::SetGamePaused(GetWorld(), false);
+	}
+}
+

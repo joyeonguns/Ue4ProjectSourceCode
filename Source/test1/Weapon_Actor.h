@@ -39,4 +39,13 @@ protected:
 
 public:	
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
+
+
+	UPROPERTY(EditAnywhere, Category = Spawn)
+		TSubclassOf<AActor_GhostTail> SpawnGhostClass;
+
+	void SpawnGhostTail();
+
+
+	FTimerHandle TH_Ghost;
 };

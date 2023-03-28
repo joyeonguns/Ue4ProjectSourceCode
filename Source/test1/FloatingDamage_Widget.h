@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/TextBlock.h"
+#include <Components/Image.h>
 #include "FloatingDamage_Widget.generated.h"
 
 /**
@@ -18,7 +19,7 @@ class TEST1_API UFloatingDamage_Widget : public UUserWidget
 public:
 	virtual void NativeTick(const FGeometry& Geometry, float DeltaSeconds) override;
 	virtual void NativeConstruct() override;
-	void SetDamage(float TakeDamege);
+	void SetDamage(float TakeDamege, bool cri);
 	void DeleteDamage();
 
 private:
@@ -28,4 +29,7 @@ private:
 
 	UPROPERTY()
 	class UTextBlock* floatingDamage;
+
+	UPROPERTY()
+		class UImage* Image_Cri;
 };

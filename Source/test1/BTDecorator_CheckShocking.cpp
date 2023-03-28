@@ -10,6 +10,7 @@
 UBTDecorator_CheckShocking::UBTDecorator_CheckShocking()
 {
 	NodeName = TEXT("CheckShocking");
+	
 }
 
 bool UBTDecorator_CheckShocking::CalculateRawConditionValue(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) const
@@ -28,3 +29,4 @@ bool UBTDecorator_CheckShocking::CalculateRawConditionValue(UBehaviorTreeCompone
 
 	return bResult;
 }
+

@@ -19,6 +19,7 @@ class TEST1_API UHUD_UserWidget : public UUserWidget
 
 public:
 	virtual void NativeConstruct() override;
+	virtual void NativeTick(const FGeometry& Geometry, float DeltaSeconds) override;
 
 	void SetHP(float _currentHp, float _MaxHp);
 
@@ -29,6 +30,16 @@ public:
 
 	void SetUlti(float _currentUlti, float _MaxUlti);
 
+	void SetProgressBar_Skill_Q(float percent, float currentCoolTime);
+	void SetProgressBar_Skill_E(float percent, float currentCoolTime);
+	void SetProgressBar_Item_1(float percent, float currentCoolTime);
+	void SetProgressBar_Item_2(float percent, float currentCoolTime);
+
+	void SetTakeDamage(float _Damage);
+	void SetTakeDamage();
+
+	void SetItemCount_1(int32 count);
+	void SetItemCount_2(int32 count);
 
 private:
 
@@ -44,6 +55,9 @@ private:
 	float MaxUltiGage;
 	float currentUltiGage;
 
+	float TakeDamageLifeTime;
+	bool bTakeDamage;
+
 	UPROPERTY()
 		class UTextBlock* EnemyState_Text;
 
@@ -52,15 +66,39 @@ private:
 
 	UPROPERTY()
 		class UImage* Weapon_Img;
-	UPROPERTY()
-		class UImage* Item_Image0;
-	UPROPERTY()
-		class UImage* Item_Image1;
 
 	UPROPERTY()
-		class UProgressBar* Ulti_ProgressBar;
+		class UProgressBar* ProgressBar_Skill_Q;
 	UPROPERTY()
-		class UImage* UltiHighlight_Image;
+		class UProgressBar* ProgressBar_Skill_E;
+
+	UPROPERTY()
+		class UProgressBar* ProgressBar_Item_1;
+	UPROPERTY()
+		class UProgressBar* ProgressBar_Item_2;
+
+	UPROPERTY()
+		class UTextBlock* Text_CoolTime_Q;
+
+	UPROPERTY()
+		class UTextBlock* Text_CoolTime_E;
+
+	UPROPERTY()
+		class UTextBlock* Text_CoolTime_1;
+
+	UPROPERTY()
+		class UTextBlock* Text_CoolTime_2;
+
+	UPROPERTY()
+		class UTextBlock* Text_Count_1;
+
+	UPROPERTY()
+		class UTextBlock* Text_Count_2;
+	
+	
+	UPROPERTY()
+		class UTextBlock* Text_TakeDamage;
+
 
 
 };

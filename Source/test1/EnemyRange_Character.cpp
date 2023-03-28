@@ -6,6 +6,7 @@
 
 AEnemyRange_Character::AEnemyRange_Character()
 {
+	realMoveSpeed = DefaultWalkSpeed;
 }
 
 
@@ -50,51 +51,6 @@ void AEnemyRange_Character::AttackCheck()
 {
 	Super::AttackCheck();
 
-//	FHitResult HitResult;
-//	FCollisionQueryParams Param(NAME_None, false, this);
-//	bool bResult = GetWorld()->SweepSingleByChannel(
-//		HitResult,
-//		GetActorLocation(),
-//		GetActorLocation() + GetActorForwardVector() * 150.f,
-//		FQuat::Identity,
-//		ECollisionChannel::ECC_GameTraceChannel2,
-//		FCollisionShape::MakeSphere(50.0f),
-//		Param
-//	);
-//
-//
-//#if ENABLE_DRAW_DEBUG
-//
-//	FVector TraceVec = GetActorForwardVector() * AttackRange;
-//	FVector Center = GetActorLocation() + TraceVec * 0.5f;
-//	float HalfHeight = AttackRange * 0.5f + AttackRadius;
-//	FQuat CapsulRot = FRotationMatrix::MakeFromZ(TraceVec).ToQuat();
-//	FColor DrawColor = bResult ? FColor::Green : FColor::Red;
-//	float DebugLife = 1.0f;
-//
-//	DrawDebugCapsule(GetWorld(),
-//		Center,
-//		HalfHeight,
-//		AttackRadius,
-//		CapsulRot,
-//		DrawColor,
-//		false,
-//		DebugLife
-//	);
-//
-//
-//#endif // ENABLE_DRAW_DEBUG
-//
-//
-//	if (bResult) {
-//		if (HitResult.Actor.IsValid()) {
-//			if (HitResult.Actor->ActorHasTag("Player")) {
-//				FDamageEvent DamageEvent;
-//				HitResult.Actor->TakeDamage(10.0f, DamageEvent, GetController(), this);
-//				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("HIT!!!"));
-//			}
-//		}
-//	}
 }
 
 void AEnemyRange_Character::SpwArrow()
@@ -105,10 +61,22 @@ void AEnemyRange_Character::SpwArrow()
 	arrowInstance = world->SpawnActor<ASPWArrow_Actor>(SpwArrowClass, SpawnInfo);
 
 	if (arrowInstance) {
+		arrowInstance->SetDamage(Status_Component->Getcurrent_Status()->Damage);
+		int32 percent = Status_Component->Getcurrent_Status()->percentage;
+		int32 rnd = FMath::RandRange(0, 99);
+		if (rnd < percent) arrowInstance->SetDamage(Status_Component->Getcurrent_Status()->Damage * 2);
+
+
 		arrowInstance->SetOwner(this);
-		
 		arrowInstance->Attaching(AttachName);	
 
+		auto ai = Cast<AEnemy_AIController>(GetController());
+		if (ai) {
+			arrowInstance->SetTargetPawn(ai->GetPlayer());
+		}
+	}
+	else {
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("!SpwArrow"));
 	}
 }
 
@@ -119,38 +87,45 @@ USkeletalMeshComponent* AEnemyRange_Character::GetSpecificPawnMesh() const
 
 void AEnemyRange_Character::Shutting()
 {
-	if (arrowInstance) {
-		auto ai = Cast<AEnemy_AIController>(GetController());
-		if (ai) {
-			arrowInstance->SetTargetLocation(ai->GetPlayer()->GetActorLocation());
-		}
-		arrowInstance->Shutting();
+	if (arrowInstance) {		
+		arrowInstance->Shootting();
 		arrowInstance->bIsShutt = true;
+		arrowInstance = nullptr;
 	}
 
 }
 
 void AEnemyRange_Character::DropArrow()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("DropArrow"));
-	arrowInstance->Destroy();
+	if (arrowInstance) {
+		arrowInstance->Destroy();
+		arrowInstance = nullptr;
+	}	
+}
+
+float AEnemyRange_Character::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+	DropArrow();
+	Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
+	return Damage;
 }
 
 void AEnemyRange_Character::Attack()
 {
 	Super::Attack();
-	PlayAnimMontage(DefaultAttack_Montage);
-	SpwArrow();
-
-	/*FTimerHandle TH;
-	GetWorldTimerManager().SetTimer(TH, this, &AEnemyRange_Character::Shutting, 2.7f, false);*/
+	if (bAttacking == false && !bShocking) {
+		PlayAnimMontage(DefaultAttack_Montage, Attack_Speed);
+		SpwArrow();
+		bAttacking = true;
+	}
+	
 }
 
 void AEnemyRange_Character::AttackEnd()
 {
 	Super::AttackEnd();
-	OnAttackEnd.Broadcast();
 
 	Shutting();
+	bAttacking = false;
 }
 

@@ -6,24 +6,44 @@
 void UHUD_UserWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
-
+ 
 	EnemyState_Text = Cast<UTextBlock>(GetWidgetFromName(TEXT("EnemyState_TextBlock")));
 
 	HP_ProgressBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("Hp_Bar")));
 
 	Weapon_Img = Cast<UImage>(GetWidgetFromName(TEXT("Weapon_Image")));
 
-	Item_Image0 = Cast<UImage>(GetWidgetFromName(TEXT("Item_Image_0")));
-	Item_Image1 = Cast<UImage>(GetWidgetFromName(TEXT("Item_Image_0")));
 
-	Ulti_ProgressBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("Ulti_Bar")));
-	UltiHighlight_Image = Cast<UImage>(GetWidgetFromName(TEXT("Ulti_Highlight")));
+	// 스킬 및 아이템
+	ProgressBar_Item_1 = Cast<UProgressBar>(GetWidgetFromName(TEXT("bar_Item_1")));
+	ProgressBar_Item_2 = Cast<UProgressBar>(GetWidgetFromName(TEXT("bar_Item_2")));
 
-	if (UltiHighlight_Image) {
-		struct FLinearColor* color = new FLinearColor(0, 0, 0, 0);
+	ProgressBar_Skill_Q = Cast<UProgressBar>(GetWidgetFromName(TEXT("Skill_Image_0")));
+	ProgressBar_Skill_E = Cast<UProgressBar>(GetWidgetFromName(TEXT("Skill_Image_1")));
 
-		UltiHighlight_Image->SetColorAndOpacity(*color);
+	Text_CoolTime_Q = Cast<UTextBlock>(GetWidgetFromName(TEXT("TextBlock_CoolTime_Q")));
+	Text_CoolTime_E = Cast<UTextBlock>(GetWidgetFromName(TEXT("TextBlock_CoolTime_E")));
+	Text_CoolTime_1 = Cast<UTextBlock>(GetWidgetFromName(TEXT("TextBlock_CoolTime_1")));
+	Text_CoolTime_2 = Cast<UTextBlock>(GetWidgetFromName(TEXT("TextBlock_CoolTime_2")));
+
+	Text_Count_1 = Cast<UTextBlock>(GetWidgetFromName(TEXT("TextBlock_Count_1")));
+	Text_Count_2 = Cast<UTextBlock>(GetWidgetFromName(TEXT("TextBlock_Count_2")));
+
+	Text_TakeDamage = Cast<UTextBlock>(GetWidgetFromName(TEXT("TextBlock_TakeDamage")));
+
+}
+
+void UHUD_UserWidget::NativeTick(const FGeometry& Geometry, float DeltaSeconds)
+{
+	Super::NativeTick(Geometry, DeltaSeconds);
+
+	if (bTakeDamage) {
+		TakeDamageLifeTime -= DeltaSeconds;
+		if (TakeDamageLifeTime <= 0.0f) {
+			SetTakeDamage();
+		}
 	}
+	
 }
 
 void UHUD_UserWidget::SetHP(float _currentHp, float _MaxHp)
@@ -63,6 +83,7 @@ void UHUD_UserWidget::SetEnemyCount(int32 _currentEnemy, int32 _MaxEnemy)
 
 void UHUD_UserWidget::SetItem_0(int32 _itemCode)
 {
+	
 }
 
 void UHUD_UserWidget::SetItem_1(int32 _itemCode)
@@ -71,26 +92,150 @@ void UHUD_UserWidget::SetItem_1(int32 _itemCode)
 
 void UHUD_UserWidget::SetUlti(float _currentUlti, float _MaxUlti)
 {
-	float percent = _currentUlti / _MaxUlti;
+	
+}
 
-	if (percent <= 0.0f) {
-		percent = 0.0f;
+void UHUD_UserWidget::SetProgressBar_Skill_Q(float percent, float currentCoolTime)
+{
+	float _percent = 1 - percent;;
+
+	if (_percent <= 0.0f) {
+		_percent = 0.0f;
 	}
-	else if (percent >= 1.0f) {
-		percent = 1.0f;
-		if (UltiHighlight_Image) {
-			struct FLinearColor* color = new FLinearColor(1, 1, 1, 1);
-
-			UltiHighlight_Image->SetColorAndOpacity(*color);
-		}
+	else if (_percent >= 1.0f) {
+		_percent = 1.0f;
 	}
 
-	Ulti_ProgressBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("Ulti_Bar")));
-	if (Ulti_ProgressBar) {
-		Ulti_ProgressBar->SetPercent(percent);
+	if (_percent > 0.0f) {
+		float cooltime = floor(currentCoolTime * 10) / 10;
+		Text_CoolTime_Q->SetText(FText::AsNumber(cooltime));
 	}
 	else {
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("Ulti_ProgressBar not find"));
+		Text_CoolTime_Q->SetText(FText::FromString(TEXT("")));
+	}
+
+	//HP_ProgressBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("Hp_Bar")));
+	if (ProgressBar_Skill_Q) {
+		ProgressBar_Skill_Q->SetPercent(_percent);
+	}
+	else {
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("ProgressBar_Skill_Q"));
+	}
+}
+
+void UHUD_UserWidget::SetProgressBar_Skill_E(float percent, float currentCoolTime)
+{
+	float _percent = 1 - percent;;
+
+	if (_percent <= 0.0f) {
+		_percent = 0.0f;
+	}
+	else if (_percent >= 1.0f) {
+		_percent = 1.0f;
+	}
+
+	if (_percent > 0.0f) {
+		float cooltime = floor(currentCoolTime * 10) / 10;
+		Text_CoolTime_E->SetText(FText::AsNumber(cooltime));
+	}
+	else {
+		Text_CoolTime_E->SetText(FText::FromString(TEXT("")));
+	}
+
+	//HP_ProgressBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("Hp_Bar")));
+	if (ProgressBar_Skill_E) {
+		ProgressBar_Skill_E->SetPercent(_percent);
+	}
+	else {
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("ProgressBar_Skill_E"));
+	}
+}
+
+void UHUD_UserWidget::SetProgressBar_Item_1(float percent, float currentCoolTime)
+{
+	float _percent = 1 - percent;
+
+	if (_percent <= 0.0f) {
+		_percent = 0.0f;
+	}
+	else if (_percent >= 1.0f) {
+		_percent = 1.0f;
+	}
+
+	if (_percent > 0.0f) {
+		float cooltime = floor(currentCoolTime * 10) / 10;
+		Text_CoolTime_1->SetText(FText::AsNumber(cooltime));
+	}
+	else {
+		Text_CoolTime_1->SetText(FText::FromString(TEXT("")));
+	}
+
+	//HP_ProgressBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("Hp_Bar")));
+	if (ProgressBar_Item_1) {
+		ProgressBar_Item_1->SetPercent(_percent);
+	}
+	else {
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("ProgressBar_Item_1"));
+	}
+}
+
+void UHUD_UserWidget::SetProgressBar_Item_2(float percent, float currentCoolTime)
+{
+	float _percent = 1 - percent;;
+
+	if (_percent <= 0.0f) {
+		_percent = 0.0f;
+	}
+	else if (_percent >= 1.0f) {
+		_percent = 1.0f;
+	}
+
+	if (_percent > 0.0f) {
+		float cooltime = floor(currentCoolTime * 10) / 10;
+		Text_CoolTime_2->SetText(FText::AsNumber(cooltime));
+	}
+	else {
+		Text_CoolTime_2->SetText(FText::FromString(TEXT("")));
+	}
+
+	//HP_ProgressBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("Hp_Bar")));
+	if (ProgressBar_Item_2) {
+		ProgressBar_Item_2->SetPercent(_percent);
+	}
+	else {
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("ProgressBar_Item_2"));
+	}
+}
+
+void UHUD_UserWidget::SetTakeDamage(float _Damage)
+{
+	FString output = "-" + FString::FormatAsNumber(_Damage);
+	Text_TakeDamage->SetText(FText::FromString(output));
+
+	TakeDamageLifeTime = 2.0f;
+	bTakeDamage = true;
+}
+
+void UHUD_UserWidget::SetTakeDamage()
+{
+	FString output = "";
+	Text_TakeDamage->SetText(FText::FromString(output));
+
+	TakeDamageLifeTime = 0.0f;
+	bTakeDamage = false;
+}
+
+void UHUD_UserWidget::SetItemCount_1(int32 count)
+{
+	if (Text_Count_1) {
+		Text_Count_1->SetText(FText::AsNumber(count));
+	}
+}
+
+void UHUD_UserWidget::SetItemCount_2(int32 count)
+{
+	if (Text_Count_2) {
+		Text_Count_2->SetText(FText::AsNumber(count));
 	}
 }
 

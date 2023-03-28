@@ -4,18 +4,18 @@
 
 #include "CoreMinimal.h"
 #include "BehaviorTree/BTService.h"
-#include "BTService_CheckShock.generated.h"
+#include "BTService_CheckAttackRange.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class TEST1_API UBTService_CheckShock : public UBTService
+class TEST1_API UBTService_CheckAttackRange : public UBTService
 {
 	GENERATED_BODY()
 
 public:
-	UBTService_CheckShock();
+	UBTService_CheckAttackRange();
 
 
 protected:

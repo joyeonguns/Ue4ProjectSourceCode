@@ -19,7 +19,7 @@ AEnemyMelee_Character::AEnemyMelee_Character()
 	AttackRadius = 50.0f;*/
 
 
-	
+	realMoveSpeed = DefaultRunSpeed;
 }
 
 void AEnemyMelee_Character::PostInitializeComponents()
@@ -100,8 +100,15 @@ void AEnemyMelee_Character::AttackCheck()
 		if (HitResult.Actor.IsValid()) {
 			if (HitResult.Actor->ActorHasTag("Player")) {
 				FDamageEvent DamageEvent;
-				HitResult.Actor->TakeDamage(10.0f, DamageEvent, GetController(), this);
-				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("HIT!!!"));
+				float Damage = Status_Component->Getcurrent_Status()->Damage;
+
+				int32 percent = Status_Component->Getcurrent_Status()->percentage;
+				int32 rnd = FMath::RandRange(0, 99);
+				if (rnd < percent) Damage *= 2;
+
+
+				HitResult.Actor->TakeDamage(Damage, DamageEvent, GetController(), this);
+				//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("HIT!!!"));
 			}
 		}
 	}
@@ -111,12 +118,16 @@ void AEnemyMelee_Character::AttackCheck()
 void AEnemyMelee_Character::Attack()
 {
 	Super::Attack();
-	PlayAnimMontage(DefaultAttack_Montage);
+	if (bAttacking == false && !bShocking) {
+		PlayAnimMontage(DefaultAttack_Montage, Attack_Speed);
+		bAttacking = true;
+	}
+	
 }
 
 void AEnemyMelee_Character::AttackEnd()
 {
 	Super::AttackEnd();
-	OnAttackEnd.Broadcast();
+	bAttacking = false;
 }
 

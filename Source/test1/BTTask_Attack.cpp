@@ -20,11 +20,14 @@ EBTNodeResult::Type UBTTask_Attack::ExecuteTask(UBehaviorTreeComponent& OwnerCom
 	
 	auto Enemy = Cast<AEnemyBasic_Character>(OwnerComp.GetAIOwner()->GetPawn());
 	if(!Enemy) return EBTNodeResult::Failed;
+	
 
 	Enemy->Attack();
 	bIsAttacking = true;
+	Enemy->OnAttackEnd.Clear();
 	Enemy->OnAttackEnd.AddLambda([this]() -> void {
 		bIsAttacking = false;
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Magenta, FString::Printf(TEXT("Attack End")));
 		});
 
 
@@ -38,7 +41,6 @@ void UBTTask_Attack::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemo
 
 	if (!bIsAttacking) {
 		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Magenta, FString::Printf(TEXT("Attack End")));
-
+		//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Magenta, FString::Printf(TEXT("Attack End")));
 	}
 }

@@ -5,18 +5,18 @@
 #include "CoreMinimal.h"
 #include "AIController.h"
 #include "TPS_Character.h"
-#include "Enemy_AIController.generated.h"
+#include "EnemyAIController2.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class TEST1_API AEnemy_AIController : public AAIController
+class TEST1_API AEnemyAIController2 : public AAIController
 {
 	GENERATED_BODY()
 	
 public:
-	AEnemy_AIController();
+	AEnemyAIController2();
 
 	virtual void OnPossess(APawn* InPawn) override;
 	virtual void OnUnPossess() override;
@@ -29,7 +29,6 @@ public:
 	static const FName TargetKey;
 	static const FName TargetPosKey;
 	static const FName bCanAttackKey;
-	static const FName bShockKey;
 
 	float AISightRadius = 500.0f;
 	float AISightAge = 50.f;
@@ -39,13 +38,9 @@ public:
 
 
 	class ATPS_Character* GetPlayer();
-	
 
 	UFUNCTION()
-		void Setplayer(class ATPS_Character* _player);
-
-	UFUNCTION()
-		void OnDetected(const TArray<AActor*> &DetectedActor);
+		void OnDetected(const TArray<AActor*>& DetectedActor);
 
 protected:
 
@@ -64,6 +59,4 @@ private:
 
 	UPROPERTY()
 		class ATPS_Character* Player;
-
-	
 };

@@ -16,17 +16,47 @@ struct FCharacterStat : public FTableRowBase
 	GENERATED_BODY()
 
 public:
-	FCharacterStat() : Role("None"), Hp(0), Str(0), Agi(0), Int(0) {};
+	FCharacterStat() : School("None"), Hp(0), Damage(0), Critical(0), CoolTime(0), percentage(7) {};
 	UPROPERTY(EditAnywhere, Category = "Data")
-		FString Role;
+		FString School;
 	UPROPERTY(EditAnywhere, Category = "Data")
 		float Hp;
 	UPROPERTY(EditAnywhere, Category = "Data")
-		int32 Str;
+		float Damage;
 	UPROPERTY(EditAnywhere, Category = "Data")
-		int32 Agi;
+		int32 Critical;
 	UPROPERTY(EditAnywhere, Category = "Data")
-		int32 Int;
+		int32 CoolTime;
+	UPROPERTY(EditAnywhere, Category = "Data")
+		int32 percentage;
+
+	void DeepCopy(FCharacterStat* newStat) {
+		newStat->School = this->School;
+		newStat->Hp = this->Hp;
+		newStat->Damage = this->Damage;
+		newStat->Critical = this->Critical;
+		newStat->CoolTime = this->CoolTime;
+		newStat->percentage = this->percentage;
+	}
+};
+
+USTRUCT(BlueprintType)
+struct FStageDataTable : public FTableRowBase
+{
+	GENERATED_BODY()
+
+public:
+	FStageDataTable() : Stage(0), Range(0), Melee(0), Boss(0) {};
+
+	UPROPERTY(EditAnywhere, Category = "Data")
+		int32 Stage;
+	UPROPERTY(EditAnywhere, Category = "Data")
+		int32 Range;
+	UPROPERTY(EditAnywhere, Category = "Data")
+		int32 Melee;
+	UPROPERTY(EditAnywhere, Category = "Data")
+		int32 Boss;
+
 };
 
 UCLASS()

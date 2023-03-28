@@ -27,9 +27,12 @@ void UBTService_DetectPerception::TickNode(UBehaviorTreeComponent& OwerComp, uin
 
 	if (aicontroller) {
 		ATPS_Character* player = aicontroller->GetPlayer();
+		
+		auto pl = OwerComp.GetBlackboardComponent()->GetValueAsObject("Target");
 
-		if (player) {
+		if (!pl && player) {
 			OwerComp.GetBlackboardComponent()->SetValueAsObject(AEnemy_AIController::TargetKey, player);
+			OwerComp.GetBlackboardComponent()->SetValueAsVector(AEnemy_AIController::TargetPosKey, player->GetActorLocation());
 		}
 	}
 

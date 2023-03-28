@@ -54,19 +54,71 @@ void AWeapon_Actor::ApplyAttack()
 void AWeapon_Actor::ApplyCollision()
 {
 	WeaponCollision->SetGenerateOverlapEvents(true);
+	GetWorldTimerManager().SetTimer(TH_Ghost, this, &AWeapon_Actor::SpawnGhostTail,  0.01f, true);
 }
 
 void AWeapon_Actor::DeleteCollision()
 {
 	WeaponCollision->SetGenerateOverlapEvents(false);
+	GetWorldTimerManager().ClearTimer(TH_Ghost);
 }
 
 void AWeapon_Actor::NotifyActorBeginOverlap(AActor* OtherActor)
 {
 	if (OtherActor->IsA(AActor::StaticClass()) && OtherActor->ActorHasTag("Player") == false) {
-		UGameplayStatics::ApplyDamage(OtherActor, 10.0f, NULL, this, UDamageType::StaticClass());
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Damage : 10"));
+		float damage;
+		bool bDebuff = false;
+
+		damage = MyOwner->Status_Component->GetStatus()->Damage;
+		
+		
+		FString School = MyOwner->Status_Component->Getcurrent_Status()->School;
+		int32 percent = MyOwner->Status_Component->Getcurrent_Status()->percentage;
+
+		int32 rnd = FMath::RandRange(0, 99);
+
+		if (rnd < percent) bDebuff = true;
+				
+		
+		auto Target = Cast<ABasic_Character>(OtherActor);
+		if (!Target) return;
+
+		if (Target->GetbDead()) return;
+
+		if (Target && bDebuff) {
+			if (School == "fire") {
+				Target->GetDeBuff_Burn();
+			}
+			else if (School == "volt") {
+				Target->GetDeBuff_Electric();
+			}
+			else if (School == "aqua") {
+				Target->GetDeBuff_Wet();
+			}
+			else {
+				damage *= 2;
+			}			
+
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("AWeapon_Actor::NotifyActorBeginOverlap:: !ApplyDebuff"));
+		}
+
+		UGameplayStatics::ApplyDamage(OtherActor, damage, NULL, MyOwner, UDamageType::StaticClass());
+
 	}
+}
+
+void AWeapon_Actor::SpawnGhostTail()
+{
+	FVector spwLoc = GetActorLocation() ;
+	FRotator spwRot = GetActorRotation() ;
+	FActorSpawnParameters spwInfo;
+
+
+	auto GhostTailInstance = GetWorld()->SpawnActor<AActor_GhostTail>(SpawnGhostClass, spwLoc, spwRot, spwInfo);
+	if (GhostTailInstance) {
+		GhostTailInstance->Init(WeaponMesh);
+	}
+	
 }
 
 

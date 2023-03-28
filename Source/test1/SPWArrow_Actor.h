@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "Basic_Character.h"
 #include "EnemyRange_Character.h"
+#include "TPS_Character.h"
 #include "SPWArrow_Actor.generated.h"
 
 UCLASS()
@@ -35,6 +36,8 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
+	virtual void NotifyHit(UPrimitiveComponent* MyComp, AActor* Other, UPrimitiveComponent* OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit) override;
+
 
 	void ApplyAttack();
 	void ApplyCollision();
@@ -47,6 +50,10 @@ public:
 
 	void SetOwner(class ABasic_Character* own);
 	void SetTargetLocation(FVector targetLoc);
+
+	void SetTargetPawn(class ATPS_Character* target);
+
+	void SetDamage(float _damage);
 
 	bool bIsShutt = false;
 
@@ -61,4 +68,7 @@ private:
 
 	FVector dir;
 	
+	class ATPS_Character* Targets;
+
+	float Damage;
 };
