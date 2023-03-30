@@ -31,7 +31,8 @@
 
 **EnemyBasic_Character**
 
-    ABasic_Character를 상속 받음, 적 캐릭터의 공통되는 속성을 모아 놓은 클래스, 캐릭터가 데미지를 입을 시 플로팅 데미지 출력, 사망시 포인트 획득
+    ABasic_Character를 상속 받음, 적 캐릭터의 공통되는 속성을 모아 놓은 클래스, 
+    캐릭터가 데미지를 입을 시 플로팅 데미지 출력, 사망시 포인트 획득
                         
 **EnemyMelee_Character**
 
@@ -77,7 +78,8 @@
 
 **Actor_RewardBox**
 
-    AAcor 클래스를 상속 받음, 스테이지 클리어시 생성되는 보상상자이다. 플레이어와 Overlap시 플레이어의 Interaction 델리케이트 함수를 활성화 시킨다.  
+    AAcor 클래스를 상속 받음, 스테이지 클리어시 생성되는 보상상자이다. 
+    플레이어와 Overlap시 플레이어의 Interaction 델리케이트 함수를 활성화 시킨다.  
                   
 **Actor_SpawnSkill_Q** 
 
@@ -85,7 +87,8 @@
 
 **SPWArrow_Actor**
 
-    AAcor 클래스를 상속 받음, EnemyRange_Character가 공격시 생성되어 손에 부착된다. Shooting 함수를 통해 부착을 해제하고 타겟을 향해 날아간다.
+    AAcor 클래스를 상속 받음, EnemyRange_Character가 공격시 생성되어 손에 부착된다. 
+    Shooting 함수를 통해 부착을 해제하고 타겟을 향해 날아간다.
                   
 **LevelScriptActor_Battle**
 
@@ -133,11 +136,13 @@
     
 **BTService_CheckAttackRange**
     
-    UBTService 클래스를 상속받음, BehaviorTree의 노드에 부착하여 설정한 매초마다 캐릭터의 공격범위에 타겟이 있는지 확인하여 Blackboard의 bCanAttack의 값을 초기화한다.
+    UBTService 클래스를 상속받음, BehaviorTree 노드에 부착하여 매초마다 감지한다.
+    캐릭터의 공격범위에 타겟이 있는지 확인하여 Blackboard의 bCanAttack의 값을 초기화한다.
     
 **BTService_CheckShock**
     
-    UBTService 클래스를 상속받음, BehaviorTree 노드에 부착하여 0.2초마다 캐릭터가 충격을 받은 상태인지 확인하여 Blackboard의 bShocking 값을 초기화한다.
+    UBTService 클래스를 상속받음, BehaviorTree 노드에 부착하여 0.2초마다 감지한다. 
+    캐릭터가 충격을 받은 상태인지 확인하여 Blackboard의 bShocking 값을 초기화한다.
    
 **BTService_Detect**
     
