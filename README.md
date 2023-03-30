@@ -226,8 +226,8 @@
     
 ### 2-2 클래스들의 UML
 
-### 캐릭터 클래스 UML
+### [캐릭터 클래스 UML]
 ![uml](https://user-images.githubusercontent.com/85017198/228981431-d4ff23e4-f456-43da-ac15-c048c0db768e.png)
 
-### 캐릭터 클래스 UML
+### [캐릭터 클래스 UML]
 ![uml2](https://user-images.githubusercontent.com/85017198/228981607-ec2e1d38-0334-4908-895a-5c451eb45171.png)
