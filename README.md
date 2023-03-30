@@ -12,20 +12,19 @@
 ### 2-1 클래스들의 역할
 #### [Character 클래스]
 **Basic_Character**
-
-                       ACharacter 클래스를 상속받는 가장 기본적인 캐릭터 클래스, 공통되는 TakeDamage, DieCharacter, Buff, DeBuff를 수행
+    ACharacter 클래스를 상속받는 가장 기본적인 캐릭터 클래스, 공통되는 TakeDamage, DieCharacter, Buff, DeBuff를 수행
                   
-**TPS_Character** : ABasic_Character를 상속 받음, 플래이어 캐릭터를 조종하는 클래스
+**TPS_Character**
+    ABasic_Character를 상속 받음, 플래이어 캐릭터를 조종하는 클래스
 
-**EnemyBasic_Character** : ABasic_Character를 상속 받음, 적 캐릭터의 공통되는 속성을 모아 놓은 클래스, 
-
-                        캐릭터가 데미지를 입을 시 플로팅 데미지 출력, 사망시 포인트 획득
+**EnemyBasic_Character**
+    ABasic_Character를 상속 받음, 적 캐릭터의 공통되는 속성을 모아 놓은 클래스, 캐릭터가 데미지를 입을 시 플로팅 데미지 출력, 사망시 포인트 획득
                         
-**EnemyMelee_Character** : AEnemyBasic_Character를 상속 받음, 적 캐릭터 중에서 근거리 공격을 수행하는 캐릭터 클래스
+**EnemyMelee_Character**
+    AEnemyBasic_Character를 상속 받음, 적 캐릭터 중에서 근거리 공격을 수행하는 캐릭터 클래스
 
-**EnemyRange_Character** : AEnemyBasic_Character를 상속 받음, 적 캐릭터 중에서 원거리 공격을 수행하는 캐릭터 클래스,
-
-                        화살을 스폰하여 발사
+**EnemyRange_Character**
+    AEnemyBasic_Character를 상속 받음, 적 캐릭터 중에서 원거리 공격을 수행하는 캐릭터 클래스, 화살을 스폰하여 발사
 
 
 #### [Component 클래스]
