@@ -177,100 +177,57 @@
 <details>
     <summary>자세히</summary>
     
-**Looby_UserWidget**
-    
-    
-    
 **Title_UserWidget**
         
-      
+    UserWidget클래스를 상속 받음, 타이레벨의 UI로 게임시작시 로비레벨로 게임종료시 게임을 나가게 한다.    
 
-**Damage_Widget**
+**Looby_UserWidget**
     
-    
-    
-**FloatingDamage_Widget**
-    
-    
+    UserWidget클래스를 상속 받음, 로비레벨의 UI로 게임시작 전 설정(텔런트, 속성)을 셋팅 및 게임 정보(버프, 디버프)를 확인할 수 있다.    
     
 **HP_UserWidget**
     
+    UserWidget클래스를 상속 받음, EnemyBasic_Character를 상속받는 캐릭터가 데미지를 입을 시 생성
+    해당 캐릭터의 체력바를 10초간 띄워준다.
+        
+**FloatingDamage_Widget**
     
-    
+    UserWidget클래스를 상속 받음, EnemyBasic_Character를 상속받는 캐릭터가 데미지를 입을 시 생성
+    해당 캐릭터의 위치를 스크린 좌표로 변경하고 캐릭터가 입은 피해를 띄워준다.
+
 **HUD_UserWidget**
     
-    
+    UserWidget클래스를 상속 받음 전투레벨에서 사용하는 UI
+    플레이어 캐릭터의 정보(체력, 스킬 및 아이템의 쿨타임, 포인트)를 띄워준다,
     
 **IngameMenu_UserWidget**
         
-    
+    UserWidget클래스를 상속 받음 전투레벨에서 사용하는 UI
+    전투 레벨에서 ESC 액션을 누르면 게임을 정지하고 게임을 계속할지 그만둘지 선택할 수 있는 UI
   
 **UserWidget_InGameData**
     
-    
-    
+    UserWidget클래스를 상속 받음 전투레벨에서 사용하는 UI
+    전투 레벨에서 TAP 액션을 누르면 스테이지의 정보와 캐릭터의 정보를 보여준다.
+        
 **UserWidget_LevelText**
     
-    
-    
-
-
-
+    UserWidget클래스를 상속 받음 전투레벨에서 사용하는 UI
+    LevelScriptActor_Battle 클래스에서 해당 스테이지에 대한 정보를 보여준다.
 
 </details>
 
-### [GameMode 클래스]
-<details>
-    <summary>자세히</summary>
-    
-Title_GameModeBase
-LoobyGameModeBase
-TPSGameModeBase
-
-
-</details>
-
-### [DataTable 구조체]
-<details>
-    <summary>자세히</summary>
-    
-CharacterStat_DataTable
-DataTable_StatLevel
-DataTable_Status
-
-
-</details>
 
 ### [게임인스턴스 구조체]
-TPSGameInstance
+**TPSGameInstance**
 
+    UGameInstance를 상속받음, 레벨이 바뀌어도 초기화되지 않는 싱글턴 형식의 객체이다.
+    게임에 필요한 데이터들을 관리하고 데이터 테이블과 데이터 구조체를 연결하여 제공한다.
+    
+### 2-2 클래스들의 UML
 
+### 캐릭터 클래스 UML
+![uml](https://user-images.githubusercontent.com/85017198/228981431-d4ff23e4-f456-43da-ac15-c048c0db768e.png)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+### 캐릭터 클래스 UML
+![uml2](https://user-images.githubusercontent.com/85017198/228981607-ec2e1d38-0334-4908-895a-5c451eb45171.png)
