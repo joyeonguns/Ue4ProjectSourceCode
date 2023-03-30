@@ -33,44 +33,52 @@
 
 
 #### [Component 클래스]
-**Character_Stat_Component** : UActorComponent를 상속받아 Basic_Character에 구성되는 클래스, 
+**Character_Stat_Component**
 
-                               캐릭터의 체력, 공격력, 특성 등의 정보를 제어한다. 
+    UActorComponent를 상속받아 Basic_Character에 구성되는 클래스, 캐릭터의 체력, 공격력, 특성 등의 정보를 제어한다. 
 
 
 #### [Animation 클래스]
-**TPSAnimInstance** : UAnimInstance를 상속받아 캐릭터의 애니메이션을 제어하는 클래스, 
-  
-                      애니메이션Notify를 통해 Delecate로 연결된 특정함수를 실행시킨다. 
+**TPSAnimInstance**
+
+    UAnimInstance를 상속받아 캐릭터의 애니메이션을 제어하는 클래스, 애니메이션Notify를 통해 Delecate로 연결된 특정함수를 실행시킨다. 
 
 
 #### [Actor 클래스]
-**Weapon_Actor** : AAcor 클래스를 상속 받음, TPS_Character가 사용하는 무기 클래스로 공격시 플레이어의 정보를 받아 데미지를 준다.  
+**Weapon_Actor** 
 
-**Actor_GhostTail** : AAcor 클래스를 상속 받음, 캐릭터가 특정 행동을 취할시 잔상효과를 위해 생성된다.
+    AAcor 클래스를 상속 받음, TPS_Character가 사용하는 무기 클래스로 공격시 플레이어의 정보를 받아 데미지를 준다.  
 
-**Actor_RewardBox** : AAcor 클래스를 상속 받음, 스테이지 클리어시 생성되는 보상상자이다. 
+**Actor_GhostTail** 
 
-                  플레이어와 Overlap시 플레이어의 Interaction 델리케이트 함수를 활성화 시킨다.  
+    AAcor 클래스를 상속 받음, 캐릭터가 특정 행동을 취할시 잔상효과를 위해 생성된다.
+
+**Actor_RewardBox**
+    AAcor 클래스를 상속 받음, 스테이지 클리어시 생성되는 보상상자이다. 플레이어와 Overlap시 플레이어의 Interaction 델리케이트 함수를 활성화 시킨다.  
                   
-**Actor_SpawnSkill_Q** : AAcor 클래스를 상속 받음, 플레이어가 스킬사용시 생성되어 적과 Overlap시 데미지를 준다.
+**Actor_SpawnSkill_Q** 
+    AAcor 클래스를 상속 받음, 플레이어가 스킬사용시 생성되어 적과 Overlap시 데미지를 준다.
 
-**SPWArrow_Actor** : AAcor 클래스를 상속 받음, EnemyRange_Character가 공격시 생성되어 손에 부착된다. 
-
-                  Shooting 함수를 통해 부착을 해제하고 타겟을 향해 날아간다.
+**SPWArrow_Actor**
+    AAcor 클래스를 상속 받음, EnemyRange_Character가 공격시 생성되어 손에 부착된다. Shooting 함수를 통해 부착을 해제하고 타겟을 향해 날아간다.
                   
-**LevelScriptActor_Battle** : ALevelScriptActor 클래스를 상속받아 레벨블루프린터의 부모클래스로 사용, 
+**LevelScriptActor_Battle**
 
-                          게임플로우에 따라 적, UI, 보상 상자를 생성한다.
+    ALevelScriptActor 클래스를 상속받아 레벨블루프린터의 부모클래스로 사용, 게임플로우에 따라 적, UI, 보상 상자를 생성한다.
 
 
 #### [PlayerController 클래스]
-**TPSPlayerController** : APlayerController 클래스를 상속받음, 
-                      전투레벨에서 사용하는 플레이어컨트롤러로 주로 UI를 생성및 제거하는 역할을 한다.
-**TPSUI_PlayerController** : APlayerController 클래스를 상속받음, 
-                      Title 레벨에서 사용하는 플레이어 컨트롤러 TitleUI 를 제어하기위해 사용한다.
-**LoobyUIPlayerController** : APlayerController 클래스를 상속받음, 
-                      Lobby 레벨에서 사용하는 플레이어 컨트롤러 LobbyUI 를 제어하기위해 사용한다.
+**TPSPlayerController** :
+
+    APlayerController 클래스를 상속받음, 전투레벨에서 사용하는 플레이어컨트롤러로 주로 UI를 생성및 제거하는 역할을 한다.
+    
+**TPSUI_PlayerController** 
+
+    APlayerController 클래스를 상속받음, Title 레벨에서 사용하는 플레이어 컨트롤러 TitleUI 를 제어하기위해 사용한다.
+    
+**LoobyUIPlayerController**
+
+    APlayerController 클래스를 상속받음, Lobby 레벨에서 사용하는 플레이어 컨트롤러 LobbyUI 를 제어하기위해 사용한다.
 
 
 #### [AI 클래스]
