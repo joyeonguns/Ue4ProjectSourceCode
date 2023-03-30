@@ -13,7 +13,7 @@
 #### [Character 클래스]
 **Basic_Character**
 
-: ACharacter 클래스를 상속받는 가장 기본적인 캐릭터 클래스, 공통되는 TakeDamage, DieCharacter, Buff, DeBuff를 수행
+                       ACharacter 클래스를 상속받는 가장 기본적인 캐릭터 클래스, 공통되는 TakeDamage, DieCharacter, Buff, DeBuff를 수행
                   
 **TPS_Character** : ABasic_Character를 상속 받음, 플래이어 캐릭터를 조종하는 클래스
 
