@@ -1,7 +1,8 @@
 # Ue4ProjectSourceCodedI
 # UnrealEngine4를 통해 제작한 3인칭 액션 게임입니다.
 
-개발 일지 : 
+개발 일지 : https://blog.naver.com/kingultra45/223020414038
+
 동영상   :
 
 ## 프로젝트에 관한 정보
