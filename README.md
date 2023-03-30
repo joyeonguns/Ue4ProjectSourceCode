@@ -4,10 +4,14 @@
 
 ## 프로젝트에 관한 정보
 ## 1. 게임 플로우 차트
+<details>
+    <summary>자세히</summary>
+
 
 ![스크린샷 2023-03-31 052810](https://user-images.githubusercontent.com/85017198/228956615-da278aba-7889-4aa5-9b30-9af6976d4446.png)
 
-
+</details>
+    
 ## 2. 클래스 정보
 ### 2-1 클래스들의 역할
 ### [Character 클래스]
