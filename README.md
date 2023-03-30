@@ -117,17 +117,54 @@
     <summary>자세히</summary>
     
 
-**Enemy_AIController** : AAIController 클래스를 상속받아 EnemyBasic_Character의 AiController로 사용된다. 
-BTDecorator_CheckShocking
-BTDecorator_IsinAttackRange
-BTService_CheckAttackRange
-BTService_CheckingShock
-BTService_CheckShock
-BTService_Detect
-BTService_DetectPerception
-BTTask_Attack
-BTTask_FindPatrollPos
-BTTask_TurnToTarget
+**Enemy_AIController**
+    
+    AAIController 클래스를 상속받아 EnemyBasic_Character의 AiController로 사용된다. UAISenseConfig_Sight를 통해 플레이어를 감지한다. 
+    BehaviorTree를 통해 EnemyBasic_Character를 상속받는 캐릭터의 움직임을 제어한다.
+    
+**BTDecorator_CheckShocking**
+    
+    UBTDecorator 클래스를 상속받음, BehaviorTree의 노드에 부착하여 해당시점에 캐릭턱가 충격을 받은 상태인지 판단한다.
+    실시간으로 충격상태를 판단할 수 없어 사용하지 못함
+    
+**BTDecorator_IsinAttackRange**
+    
+    UBTDecorator 클래스를 상속받음, BehaviorTree의 노드에 부착하여 해당시점에서 캐릭터의 공격범위에 타겟이 있는지 판단한다.
+    
+**BTService_CheckAttackRange**
+    
+    UBTService 클래스를 상속받음, BehaviorTree의 노드에 부착하여 설정한 매초마다 캐릭터의 공격범위에 타겟이 있는지 확인하여 Blackboard의 bCanAttack의 값을 초기화한다.
+    
+**BTService_CheckShock**
+    
+    UBTService 클래스를 상속받음, BehaviorTree 노드에 부착하여 0.2초마다 캐릭터가 충격을 받은 상태인지 확인하여 Blackboard의 bShocking 값을 초기화한다.
+   
+**BTService_Detect**
+    
+    UBTService 클래스를 상속받음, BehaviorTree 노드에 부착하여 매초마다 감지한다.
+    FCollisionQueryParams를 통해 캐릭터 주변에 타겟이 있는지 감지하여 Blackboard의 Target 값을 초기화한다.
+    AIPercetion 방식을 채택하여 사용하지 않는다.
+    
+**BTService_DetectPerception**
+    
+    UBTService 클래스를 상속받음, BehaviorTree 노드에 부착하여 매초마다 감지한다.
+    AIPercetion을 사용하여 캐릭터가 타겟을 발견하였는지 감지하여 Blackboard의 Target 값을 초기화한다.
+    
+**BTTask_Attack**
+    
+    UBTTaskNode 클래스를 상속받음, BehaviorTree에서 사용할 노드이다.
+    캐릭터의 공격함수를 호출하고 공격이 끝나면 리턴값을 Succeeded 해 준다.
+    
+**BTTask_FindPatrollPos**
+    
+    UBTTaskNode 클래스를 상속받음, BehaviorTree에서 사용할 노드이다.
+    UNavigationSystemV1를 통해 캐릭터를 이동시킬 랜덤한 좌표를 얻어 Blackboard의 PatrolPos를 초기화한다. 
+    
+**BTTask_TurnToTarget**
+    
+    UBTTaskNode 클래스를 상속받음, BehaviorTree에서 사용할 노드이다.
+    캐릭터가 공격하는 동안 FRotationMatrix를 통해 캐릭터의 Rotation을 변경한다.
+    
 
 </details>
     
@@ -135,41 +172,83 @@ BTTask_TurnToTarget
 <details>
     <summary>자세히</summary>
     
+**Looby_UserWidget**
+    
+    
+    
+**Title_UserWidget**
+        
+      
 
+**Damage_Widget**
+    
+    
+    
+**FloatingDamage_Widget**
+    
+    
+    
+**HP_UserWidget**
+    
+    
+    
+**HUD_UserWidget**
+    
+    
+    
+**IngameMenu_UserWidget**
+        
+    
+  
+**UserWidget_InGameData**
+    
+    
+    
+**UserWidget_LevelText**
+    
+    
+    
 
 
 
 
 </details>
 
-CharacterStat_DataTable
-
-Damage_Widget
-FloatingDamage_Widget
-HP_UserWidget
-HUD_UserWidget
-IngameMenu_UserWidget
-Looby_UserWidget
-Title_UserWidget
-UserWidget_InGameData
-UserWidget_LevelText
-
-DataTable_StatLevel
-DataTable_Status
-
-
-
-
-
-
-
-
-
+### [GameMode 클래스]
+<details>
+    <summary>자세히</summary>
+    
 Title_GameModeBase
 LoobyGameModeBase
 TPSGameModeBase
 
+
+</details>
+
+### [DataTable 구조체]
+<details>
+    <summary>자세히</summary>
+    
+CharacterStat_DataTable
+DataTable_StatLevel
+DataTable_Status
+
+
+</details>
+
+### [게임인스턴스 구조체]
 TPSGameInstance
+
+
+
+
+
+
+
+
+
+
+
 
 
 
