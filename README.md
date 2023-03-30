@@ -11,6 +11,10 @@
 ## 2. 클래스 정보
 ### 2-1 클래스들의 역할
 ### [Character 클래스]
+<details>
+    <summary>자세히</summary>
+
+
 **Basic_Character**
 
     ACharacter 클래스를 상속받는 가장 기본적인 캐릭터 클래스, 공통되는 TakeDamage, DieCharacter, Buff, DeBuff를 수행
@@ -32,12 +36,20 @@
     AEnemyBasic_Character를 상속 받음, 적 캐릭터 중에서 원거리 공격을 수행하는 캐릭터 클래스, 화살을 스폰하여 발사
 
 
+</details>
+
 ### [Component 클래스]
+<details>
+    <summary>자세히</summary>
+    
+    
 **Character_Stat_Component**
 
     UActorComponent를 상속받아 Basic_Character에 구성되는 클래스, 캐릭터의 체력, 공격력, 특성 등의 정보를 제어한다. 
 
-
+    
+</details>
+    
 ### [Animation 클래스]
 **TPSAnimInstance**
 
@@ -45,6 +57,10 @@
 
 
 ### [Actor 클래스]
+<details>
+    <summary>자세히</summary>
+    
+    
 **Weapon_Actor** 
 
     AAcor 클래스를 상속 받음, TPS_Character가 사용하는 무기 클래스로 공격시 플레이어의 정보를 받아 데미지를 준다.  
@@ -69,8 +85,13 @@
 
     ALevelScriptActor 클래스를 상속받아 레벨블루프린터의 부모클래스로 사용, 게임플로우에 따라 적, UI, 보상 상자를 생성한다.
 
-
+</details>
+    
 ### [PlayerController 클래스]
+<details>
+    <summary>자세히</summary>
+    
+    
 **TPSPlayerController** :
 
     APlayerController 클래스를 상속받음, 전투레벨에서 사용하는 플레이어컨트롤러로 주로 UI를 생성및 제거하는 역할을 한다.
@@ -83,7 +104,8 @@
 
     APlayerController 클래스를 상속받음, Lobby 레벨에서 사용하는 플레이어 컨트롤러 LobbyUI 를 제어하기위해 사용한다.
 
-
+</details>
+    
 ### [AI 클래스]
 **Enemy_AIController** : AAIController 클래스를 상속받아 EnemyBasic_Character의 AiController로 사용된다. 
 BTDecorator_CheckShocking
