@@ -5,6 +5,11 @@
 
 동영상   :
 
+![Title](https://user-images.githubusercontent.com/85017198/228983652-e549073d-c6f2-4077-b987-5613d767df17.png)
+![Lobby](https://user-images.githubusercontent.com/85017198/228983675-6145a17d-3f4e-49f6-a414-ec2c2db13a4a.png)
+![InGame](https://user-images.githubusercontent.com/85017198/228983663-a8cca257-703a-480b-ab24-51f9fccee2d2.png)
+
+
 ## 프로젝트에 관한 정보
 ## 1. 게임 플로우 차트
 <details>
