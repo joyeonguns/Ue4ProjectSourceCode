@@ -4,6 +4,7 @@
 #include "Basic_Character.h"
 #include "HP_UserWidget.h"
 #include "Kismet/GameplayStatics.h"
+#include "TPSGameInstance.h"
 #include "Engine.h"
 
 
@@ -126,7 +127,7 @@ void ABasic_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 void ABasic_Character::DieCharacter()
 {
 	if (bDead) return;
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Magenta, FString::Printf(TEXT("Die HP :")));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Magenta, FString::Printf(TEXT("Die HP :")));
 	if (Death_AnimMontage) {
 		PlayAnimMontage(Death_AnimMontage);
 	}
@@ -143,6 +144,7 @@ void ABasic_Character::DieCharacter()
 
 void ABasic_Character::DestroyCharacter()
 {
+	
 	this->Destroy();
 }
 
@@ -220,7 +222,7 @@ bool ABasic_Character::GetbDead()
 
 void ABasic_Character::ApplyBuff_Heart()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("ABasic_Character::ApplyBuff_Heart"));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("ABasic_Character::ApplyBuff_Heart"));
 	ApplyBuffCode = 1;
 
 	Status_Component->SetRecovery_Percent(AddRecoverHp);
@@ -233,7 +235,7 @@ void ABasic_Character::ApplyBuff_Heart()
 
 void ABasic_Character::ApplyBuff_Energy()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("ABasic_Character::ApplyBuff_Energy"));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("ABasic_Character::ApplyBuff_Energy"));
 	// 특성 강화
 	ApplyBuffCode = 2;
 
@@ -245,7 +247,7 @@ void ABasic_Character::ApplyBuff_Energy()
 
 void ABasic_Character::ApplyBuff_Arcane()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("ABasic_Character::ApplyBuff_Arcane"));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("ABasic_Character::ApplyBuff_Arcane"));
 	// 모든 속도 강화
 	ApplyBuffCode = 3;
 
@@ -258,7 +260,7 @@ void ABasic_Character::ApplyBuff_Arcane()
 
 void ABasic_Character::ApplyBuff_Dia()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("ABasic_Character::ApplyBuff_Dia"));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("ABasic_Character::ApplyBuff_Dia"));
 	// 수호천사
 	ApplyBuffCode = 4;
 
@@ -269,7 +271,7 @@ void ABasic_Character::ApplyBuff_Dia()
 
 void ABasic_Character::ApplyBuff_Shield()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("ABasic_Character::ApplyBuff_Shield"));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("ABasic_Character::ApplyBuff_Shield"));
 	// 피격 쉴드
 	ApplyBuffCode = 5;
 	Status_Component->SetShield(AddShield);

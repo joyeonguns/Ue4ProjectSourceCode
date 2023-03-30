@@ -29,3 +29,13 @@ void UUserWidget_LevelText::SetComments_Reward()
 		Text_Comments->SetText(FText::FromString(str));
 	}
 }
+
+void UUserWidget_LevelText::SetComments_GameClear()
+{
+	Text_Comments = Cast<UTextBlock>(GetWidgetFromName(TEXT("TextBlock_Comments")));
+	if (Text_Comments) {
+		FString str = "   Game Clear!!   ";
+
+		Text_Comments->SetText(FText::FromString(str));
+	}
+}

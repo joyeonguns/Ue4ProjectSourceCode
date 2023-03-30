@@ -25,12 +25,12 @@ void ATPSGameModeBase::ChangeMenuUI(TSubclassOf<UUserWidget> NewWidgetClasss)
 		CurrentWidget = CreateWidget(GetWorld(), NewWidgetClasss);
 		if (CurrentWidget != nullptr) {
 			CurrentWidget->AddToViewport();
-			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT(" CurrentWidget "));
+			//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT(" CurrentWidget "));
 		}
 	}
 
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("Change UI"));
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, GetWorld()->GetMapName());
+	//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("Change UI"));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, GetWorld()->GetMapName());
 }
 
 TSubclassOf<UUserWidget> ATPSGameModeBase::GetLobbyWidgetClass()

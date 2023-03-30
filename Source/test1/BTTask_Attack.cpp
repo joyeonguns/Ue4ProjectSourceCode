@@ -27,7 +27,7 @@ EBTNodeResult::Type UBTTask_Attack::ExecuteTask(UBehaviorTreeComponent& OwnerCom
 	Enemy->OnAttackEnd.Clear();
 	Enemy->OnAttackEnd.AddLambda([this]() -> void {
 		bIsAttacking = false;
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Magenta, FString::Printf(TEXT("Attack End")));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Magenta, FString::Printf(TEXT("Attack End")));
 		});
 
 

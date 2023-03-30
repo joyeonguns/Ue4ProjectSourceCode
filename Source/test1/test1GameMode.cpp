@@ -16,5 +16,5 @@ Atest1GameMode::Atest1GameMode()
 
 void Atest1GameMode::StartPlay()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Hellow World"));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Hellow World"));
 }

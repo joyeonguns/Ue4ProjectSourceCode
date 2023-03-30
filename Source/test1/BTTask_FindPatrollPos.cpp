@@ -5,6 +5,7 @@
 #include "Enemy_AIController.h"
 #include "EnemyBasic_Character.h"
 #include "NavigationSystem.h"
+#include <Kismet/GameplayStatics.h>
 #include "BehaviorTree/BlackboardComponent.h"
 
 UBTTask_FindPatrollPos::UBTTask_FindPatrollPos()
@@ -30,13 +31,21 @@ EBTNodeResult::Type UBTTask_FindPatrollPos::ExecuteTask(UBehaviorTreeComponent& 
 
 	FVector Origin = OwnerComp.GetBlackboardComponent()->GetValueAsVector(AEnemy_AIController::PatrolPosKey);
 
+	FVector targetPos;
+	auto player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
+	if (player) {
+		targetPos = player->GetActorLocation();
+	}
+
 	FNavLocation NextPatrolPos;
 
-	if (NavSystem->GetRandomPointInNavigableRadius(FVector::ZeroVector, 500.0f, NextPatrolPos)) {
+	if (NavSystem->GetRandomPointInNavigableRadius(targetPos, 200.0f, NextPatrolPos)) {
 		OwnerComp.GetBlackboardComponent()->SetValueAsVector(AEnemy_AIController::PatrolPosKey, NextPatrolPos.Location);
 
 		return EBTNodeResult::Succeeded;
 	}
+
+	
 
 	UE_LOG(LogTemp, Warning, TEXT("!Failed"));
 	return EBTNodeResult::Failed;

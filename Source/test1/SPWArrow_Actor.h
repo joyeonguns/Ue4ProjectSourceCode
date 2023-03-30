@@ -46,7 +46,7 @@ public:
 	void DestroyObj();
 
 	void Attaching(FName AttachName);
-	void Shutting();
+	void Shootting();
 
 	void SetOwner(class ABasic_Character* own);
 	void SetTargetLocation(FVector targetLoc);

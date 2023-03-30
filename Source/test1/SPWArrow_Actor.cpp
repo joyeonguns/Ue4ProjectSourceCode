@@ -48,7 +48,7 @@ void ASPWArrow_Actor::NotifyActorBeginOverlap(AActor* OtherActor)
 		if (target) {
 			if (MyOwner != target && bIsShutt) {
 				UGameplayStatics::ApplyDamage(OtherActor, 10.0f, NULL, MyOwner, UDamageType::StaticClass());
-				GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Damage : 10"));
+				//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Damage : 10"));
 				Destroy();
 
 			}

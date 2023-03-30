@@ -187,9 +187,7 @@ float ATPS_Character::TakeDamage(float Damage, FDamageEvent const& DamageEvent, 
 void ATPS_Character::BeginPlay()
 {
 	Super::BeginPlay();
-	if (GEngine) {
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("Set TPS_Character"));
-	}
+	
 
 
 	Status_Component->OnHpApply.AddUObject(this, &ATPS_Character::HpUIAplly);
@@ -215,6 +213,15 @@ void ATPS_Character::BeginPlay()
 
 	SetItemCount_Heal(MaxItemCount_Heal);
 	SetItemCount_Reinforce(MaxCount_Reinforce);
+
+
+	auto gameInstace = Cast<UTPSGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+	if (gameInstace) {
+		if (playerController) {
+			playerController->GetHUD()->SetPoint(gameInstace->Point);
+		}
+	}
+
 }
 
 void ATPS_Character::ControllMode(int32 mode)
@@ -428,7 +435,7 @@ void ATPS_Character::NotifyHit(UPrimitiveComponent* MyComp, AActor* Other, UPrim
 		currentRollingTime = RollingDuration;
 		rollEndLoc = GetActorLocation();
 
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("Overlap Wall"));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("Overlap Wall"));
 	}
 }
 
@@ -570,7 +577,7 @@ void ATPS_Character::Tick(float DeltaTime)
 		if (current_CooTime_Q >= Def_CooTime_Q) {
 			coolDown_Q = true;
 
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("CoolDown Q On"));
+			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("CoolDown Q On"));
 		}
 	}
 
@@ -579,7 +586,7 @@ void ATPS_Character::Tick(float DeltaTime)
 		if (current_CooTime_E >= Def_CooTime_E) {
 			coolDown_E = true;
 
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("CoolDown E On"));
+			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("CoolDown E On"));
 		}
 	}
 
@@ -588,7 +595,7 @@ void ATPS_Character::Tick(float DeltaTime)
 		if (current_CooTime_1 >= Def_CooTime_1) {
 			coolDown_1 = true;
 
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("CoolDown 1 On"));
+			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("CoolDown 1 On"));
 		}
 	}
 
@@ -597,7 +604,7 @@ void ATPS_Character::Tick(float DeltaTime)
 		if (current_CooTime_2 >= Def_CooTime_2) {
 			coolDown_2 = true;
 
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("CoolDown 2 On"));
+			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("CoolDown 2 On"));
 		}
 	}
 
@@ -693,7 +700,7 @@ void ATPS_Character::StartJump()
 {
 	if (isCanJump) {	
 		jumpCount++;
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("Jump!!"));		
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("Jump!!"));		
 		if (jumpCount == 1) {
 			Jump();			
 		}	
@@ -742,31 +749,10 @@ void ATPS_Character::PressDash()
 }
 
 void ATPS_Character::Attack_0()
-{
-	//if (isDuringAttack == false) {
-	//	FString PlaySection = "Attack_" + FString::FromInt(ComboAttackNum);
-	//	PlayAnimMontage(DefaultAttack_Montage, 1.2f, FName(*PlaySection));
-	//	ComboAttackNum++;
-	//	if (ComboAttackNum > 3)
-	//		ComboAttackNum = 1;
-	//	
-	//	
-	//	
-	//	isDuringAttack = true;
-	//	isCanJump = false;
-	//	isCanMove = false;
-	//	isCanRotate = false;
-
-	//	CurrentWeapon->ApplyAttack();
-
-	//	// 1초후 상태 변경
-	//	FTimerHandle TH_Attack0_End;
-	//	GetWorldTimerManager().SetTimer(TH_Attack0_End, this, &ATPS_Character::Attack_0_End, 1.f, false);
-	//}
-
+{	
 	if (bDisarm) return;
 
-	if (!isDuringAttack) {
+	if (!isDuringAttack && !bShocking) {
 		CurrentWeapon->ApplyAttack();
 	}
 

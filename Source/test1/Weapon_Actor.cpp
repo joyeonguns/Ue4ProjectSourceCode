@@ -99,7 +99,7 @@ void AWeapon_Actor::NotifyActorBeginOverlap(AActor* OtherActor)
 				damage *= 2;
 			}			
 
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("AWeapon_Actor::NotifyActorBeginOverlap:: !ApplyDebuff"));
+			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("AWeapon_Actor::NotifyActorBeginOverlap:: !ApplyDebuff"));
 		}
 
 		UGameplayStatics::ApplyDamage(OtherActor, damage, NULL, MyOwner, UDamageType::StaticClass());

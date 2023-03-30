@@ -481,7 +481,6 @@ void ULooby_UserWidget::TakeStatusArray()
 	if (gameinstance) {
 		statusArray.Init(1, 8);
 		statusArray = gameinstance->statusArray;
-		UnLockArray = gameinstance->UnLockItemList;
 
 		point = gameinstance->Point;
 	}
@@ -500,9 +499,12 @@ void ULooby_UserWidget::OnClicked_GameStart()
 	if (gameinstance) {
 		gameinstance->statusArray = statusArray;
 		gameinstance->SelectedWeaponCode = SelectWeaponCode;
+		gameinstance->Point = point;
 	}
 
-	UGameplayStatics::OpenLevel(GetWorld(), FName("TPS_InGame"));
+	//UGameplayStatics::OpenLevel(GetWorld(), FName("TPS_InGame"));
+	UGameplayStatics::OpenLevel(GetWorld(), FName("GreenwoodVillage_demoMap"));
+	
 }
 
 void ULooby_UserWidget::OnClicked_SelectWeapon_0()

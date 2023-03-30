@@ -36,10 +36,19 @@ void ALevelScriptActor_Battle::BeforeStage()
 	currentStage++;
 	// BeforeStage UI 생성
 	DeleteComment();
-	SpawnComment(currentStage);
 
-	FTimerHandle th;
-	GetWorldTimerManager().SetTimer(th, this, &ALevelScriptActor_Battle::StageStart, 3.0f, false);
+
+	if (currentStage <= 5) {
+		SpawnComment(currentStage);
+
+		FTimerHandle th;
+		GetWorldTimerManager().SetTimer(th, this, &ALevelScriptActor_Battle::StageStart, 3.0f, false);
+	}
+	else {
+		
+	}
+
+	
 }
 
 void ALevelScriptActor_Battle::StageStart()
@@ -97,9 +106,16 @@ void ALevelScriptActor_Battle::StageStart()
 
 void ALevelScriptActor_Battle::SpawnEnemy()
 {
+	int level = 0;
+	auto _GameInstance = Cast<UTPSGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+	if (_GameInstance) {
+		level = _GameInstance->statusArray[4];
+	}
+	
+
 	for (int i = 0; i < MeleeEnemyCount; i++) {
 		
-		FVector SpwLoc = MeleeSpwLoc + FVector(0, 300, 0) * i;
+		FVector SpwLoc = MeleeSpwLoc + FVector(0, -300, 0) * i;
 		FRotator SpwRot = RewardSpwRot;;
 		FActorSpawnParameters SpawnInfo;
 		UWorld* world = GetWorld();
@@ -107,9 +123,11 @@ void ALevelScriptActor_Battle::SpawnEnemy()
 
 		if (melee) {
 			melee->OnDeadDelegate.AddUObject(this, &ALevelScriptActor_Battle::EnemySignal);
-						
+			melee->SetPrize(melee->GetPrize() + level);
+
 			int32 rand = FMath::RandRange(0, 9);
 			if (rand < EnemyBuffPercent) {
+				melee->SetPrize(melee->GetPrize() * 2);
 				// 버프
 				int32 randBuff = FMath::RandRange(1, 5);
 				switch (randBuff)
@@ -143,7 +161,7 @@ void ALevelScriptActor_Battle::SpawnEnemy()
 
 	for (int i = 0; i < RangeEnemyCount; i++) {
 
-		FVector SpwLoc = RangeSpwLoc + FVector(300, 0, 0) * i;
+		FVector SpwLoc = RangeSpwLoc + FVector(-300, 0, 0) * i;
 		FRotator SpwRot = RewardSpwRot;;
 		FActorSpawnParameters SpawnInfo;
 		UWorld* world = GetWorld();
@@ -151,10 +169,12 @@ void ALevelScriptActor_Battle::SpawnEnemy()
 
 		if (range) {
 			range->OnDeadDelegate.AddUObject(this, &ALevelScriptActor_Battle::EnemySignal);
+			range->SetPrize(range->GetPrize() + level);
 
 			int32 rand = FMath::RandRange(0, 9);
 			if (EnemyBuffPercent) {
 				// 버프
+				range->SetPrize(range->GetPrize() * 2);
 				int32 randBuff = FMath::RandRange(1, 5);
 				switch (randBuff)
 				{
@@ -190,7 +210,7 @@ void ALevelScriptActor_Battle::EnemySignal()
 {
 	live_StageEnemy--;
 
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Enemy : ")) + FString::FormatAsNumber(live_StageEnemy));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Enemy : ")) + FString::FormatAsNumber(live_StageEnemy));
 
 	if (live_StageEnemy <= 0 && bliveStage) {
 		live_StageEnemy = 0;
@@ -202,19 +222,31 @@ void ALevelScriptActor_Battle::EnemySignal()
 
 void ALevelScriptActor_Battle::StageClear()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("StageClear 롱"));
+	if (currentStage < 5) {
+		auto player = Cast<ATPS_Character>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+		if (player) {
+			player->ResetBuff();
+		}
 
-	auto player = Cast<ATPS_Character>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-	if (player) {
-		player->ResetBuff();
+
+
+		SpawnRewardBox();
+
+		// Reward 생성
+		SpawnComment();
+	}
+	else {
+		// UI 출력
+		if (!RewardwidgetInstance) {
+			RewardwidgetInstance = CreateWidget<UUserWidget_LevelText>(GetWorld(), RewardwidgetClass);
+		}
+
+		if (RewardwidgetInstance) {
+			RewardwidgetInstance->SetComments_GameClear();
+			RewardwidgetInstance->AddToViewport();
+		}
 	}
 	
-	
-
-	SpawnRewardBox();
-
-	// Reward 생성
-	SpawnComment();
 }
 
 void ALevelScriptActor_Battle::SpawnRewardBox()
@@ -227,7 +259,7 @@ void ALevelScriptActor_Battle::SpawnRewardBox()
 	UWorld* world = GetWorld();
 	leftReward = world->SpawnActor<AActor_RewardBox>(RewardBoxClass, spwLoc, spwRot, SpawnInfo);
 
-	rightReward = world->SpawnActor<AActor_RewardBox>(RewardBoxClass, spwLoc + FVector(0, 300.0f, 0), spwRot, SpawnInfo);
+	rightReward = world->SpawnActor<AActor_RewardBox>(RewardBoxClass, spwLoc + FVector(300, 0, 0), spwRot, SpawnInfo);
 
 
 	if (leftReward && rightReward) {
@@ -289,7 +321,7 @@ void ALevelScriptActor_Battle::SpawnComment(int32 stage)
 		RewardwidgetInstance->AddToViewport();
 	}
 
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("!SpawnEnemy UI"));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("!SpawnEnemy UI"));
 }
 
 void ALevelScriptActor_Battle::SpawnComment()

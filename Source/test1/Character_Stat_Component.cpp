@@ -127,7 +127,7 @@ void UCharacter_Stat_Component::SetDamage(float Damage)
 {
 	if (Shield > 0) {
 		Shield--;
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Shield"));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Shield"));
 		if (Shield == 0) {
 			OnResetAura.Broadcast();
 		}
@@ -247,7 +247,12 @@ void UCharacter_Stat_Component::SetEnemyRangeData()
 		TArray<int32> _statusArray = _GameInstance->statusArray;
 		int32 level = _statusArray[4];
 
-		Default_Status = _GameInstance->Get_FEnemyRange_Status(level);
+		if (Mode == 1) {
+			Default_Status = _GameInstance->Get_FEnemyMelee_Status(level);
+		}
+		else if (Mode == 2) {
+			Default_Status = _GameInstance->Get_FEnemyRange_Status(level);
+		}		
 
 		current_Status = new FCharacterStat();
 		Default_Status->DeepCopy(current_Status);

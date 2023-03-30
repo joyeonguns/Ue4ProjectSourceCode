@@ -5,6 +5,8 @@
 #include "Kismet/GameplayStatics.h"
 #include "Enemy_AIController.h"
 #include "DrawDebugHelpers.h"
+#include "TPSPlayerController.h"
+#include "TPSGameInstance.h"
 
 AEnemyBasic_Character::AEnemyBasic_Character()
 {
@@ -86,6 +88,21 @@ void AEnemyBasic_Character::DieCharacter()
 	if (bDead) return;
 	Super::DieCharacter();
 	OnDeadDelegate.Broadcast();
+
+	if (ActorHasTag("Enemy")) {
+		auto gameInstace = Cast<UTPSGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+		if (gameInstace) {
+			gameInstace->Point += prize;
+
+			auto plcont = Cast<ATPSPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+			if (plcont) {
+				plcont->GetHUD()->SetPoint(gameInstace->Point);
+				plcont->GetHUD()->SetGetPoint(prize);
+			}
+
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Magenta,FString::Printf(TEXT("point + %d : "), prize) );
+		}
+	}
 
 	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Magenta, TEXT("DieCharacter"));
 }

@@ -19,6 +19,7 @@ public:
 	virtual void NativeConstruct() override;
 	void SetComments_StartStage(int32 stage);
 	void SetComments_Reward();
+	void SetComments_GameClear();
 
 
 private:

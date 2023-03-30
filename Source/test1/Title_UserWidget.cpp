@@ -22,25 +22,20 @@ void UTitle_UserWidget::NativeConstruct()
 	auto gameinstance = Cast<UTPSGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 	if (gameinstance) {
 		gameinstance->statusArray.Init(0, 8);
-		for (int i = 0; i < 3; i++) {
-			gameinstance->UnLockItemList[i] = i;
-		}
-		for (int i = 0; i < 12; i++) {
-			gameinstance->LockItemList[i] = i+3;
-		}
+		
 	}
 	
 }
 
 void UTitle_UserWidget::GameStartCallback()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("Game Start Button"));	
+	//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("Game Start Button"));	
 	UGameplayStatics::OpenLevel(GetWorld(), FName("Lobby_Level"));
 	
 }
 
 void UTitle_UserWidget::GameEndCallback()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("Game End Button"));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("Game End Button"));
 	UKismetSystemLibrary::QuitGame(GetWorld(), nullptr, EQuitPreference::Quit, false);
 }

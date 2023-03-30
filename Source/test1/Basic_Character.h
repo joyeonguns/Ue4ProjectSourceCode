@@ -150,7 +150,7 @@ public:
 	UFUNCTION()
 	virtual void DieCharacter();
 
-	void DestroyCharacter();
+	virtual void DestroyCharacter();
 
 	UPROPERTY(VisibleAnywhere, Category = Stat)
 		class UCharacter_Stat_Component* Status_Component;

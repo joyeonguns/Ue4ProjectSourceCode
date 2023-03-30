@@ -30,6 +30,9 @@ void UHUD_UserWidget::NativeConstruct()
 	Text_Count_2 = Cast<UTextBlock>(GetWidgetFromName(TEXT("TextBlock_Count_2")));
 
 	Text_TakeDamage = Cast<UTextBlock>(GetWidgetFromName(TEXT("TextBlock_TakeDamage")));
+	
+	Text_Point = Cast<UTextBlock>(GetWidgetFromName(TEXT("TextBlock_Point")));
+	Text_GetPoint = Cast<UTextBlock>(GetWidgetFromName(TEXT("TextBlock_GetPoint")));
 
 }
 
@@ -41,6 +44,13 @@ void UHUD_UserWidget::NativeTick(const FGeometry& Geometry, float DeltaSeconds)
 		TakeDamageLifeTime -= DeltaSeconds;
 		if (TakeDamageLifeTime <= 0.0f) {
 			SetTakeDamage();
+		}
+	}
+
+	if (bGetPoint) {
+		GetPointLifeTime -= DeltaSeconds;
+		if (GetPointLifeTime <= 0.0f) {
+			SetGetPoint();
 		}
 	}
 	
@@ -236,6 +246,34 @@ void UHUD_UserWidget::SetItemCount_2(int32 count)
 {
 	if (Text_Count_2) {
 		Text_Count_2->SetText(FText::AsNumber(count));
+	}
+}
+
+void UHUD_UserWidget::SetPoint(float _point)
+{
+	if (Text_Point) {
+		Text_Point->SetText(FText::AsNumber(_point));
+	}
+}
+
+void UHUD_UserWidget::SetGetPoint(float _getPoint)
+{
+	if (Text_GetPoint) {
+		Text_GetPoint->SetText(FText::FromString("+" + FString::FormatAsNumber(_getPoint)));
+
+		GetPointLifeTime = 2.0f;
+		bGetPoint = true;
+	}
+}
+
+void UHUD_UserWidget::SetGetPoint()
+{
+	if (Text_GetPoint) {
+		Text_GetPoint->SetText(FText::FromString(""));
+
+
+		GetPointLifeTime = 0.0f;
+		bGetPoint = false;
 	}
 }
 

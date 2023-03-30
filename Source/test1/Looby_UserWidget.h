@@ -90,6 +90,7 @@ public:
 
 	void SetStatState();
 	void TakeStatusArray();
+
 private:
 	TArray<int32> statusArray;
 	TArray<int32> UnLockArray;

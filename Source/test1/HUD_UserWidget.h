@@ -41,6 +41,10 @@ public:
 	void SetItemCount_1(int32 count);
 	void SetItemCount_2(int32 count);
 
+	void SetPoint(float _point);
+	void SetGetPoint(float _getPoint);
+	void SetGetPoint();
+
 private:
 
 	int32 MaxEnemyCount;
@@ -57,6 +61,9 @@ private:
 
 	float TakeDamageLifeTime;
 	bool bTakeDamage;
+
+	float GetPointLifeTime;
+	bool bGetPoint;
 
 	UPROPERTY()
 		class UTextBlock* EnemyState_Text;
@@ -98,6 +105,11 @@ private:
 	
 	UPROPERTY()
 		class UTextBlock* Text_TakeDamage;
+
+	UPROPERTY()
+		class UTextBlock* Text_Point;
+	UPROPERTY()
+		class UTextBlock* Text_GetPoint;
 
 
 

@@ -86,12 +86,6 @@ public :
 	virtual void Init() override;
 
 
-	// 무기
-	FWeaponData* Weapons_Data(int32 code);
-
-	UPROPERTY()
-		class UDataTable* WeaponTable;
-
 	// 스테이지
 	FStageDataTable* Get_FStageDataTable(int32 level);
 
@@ -126,11 +120,6 @@ public :
 	UPROPERTY(VisibleAnywhere, Category = Status)
 		TArray<int32> statusArray;
 
-	UPROPERTY(VisibleAnywhere, Category = Item)
-		TArray<int32> UnLockItemList;
-
-	UPROPERTY(VisibleAnywhere, Category = Item)
-		TArray<int32> LockItemList;
 
 	// 속성 스텟
 	UPROPERTY(VisibleAnywhere, Category = Item)

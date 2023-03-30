@@ -5,21 +5,9 @@
 #include "Enemy_AIController.h"
 
 AEnemyMelee_Character::AEnemyMelee_Character()
-{
-	/*PrimaryActorTick.bCanEverTick = true;
-
-	AIControllerClass = AEnemy_AIController::StaticClass();
-	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
-
-	Set_HpBar();
-
-	bOnHpBar = false;
-	lifeTime_HpBar = 0.0f;
-	AttackRange = 150.f;
-	AttackRadius = 50.0f;*/
-
-
+{	
 	realMoveSpeed = DefaultRunSpeed;
+	Status_Component->SetMode(1);
 }
 
 void AEnemyMelee_Character::PostInitializeComponents()

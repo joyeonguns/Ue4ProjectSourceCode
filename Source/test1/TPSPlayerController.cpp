@@ -20,8 +20,8 @@ void ATPSPlayerController::BeginPlay()
 
 	if (gameinstance) {
 		int32 lvl = gameinstance->statusArray[0];
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Blue, FString::Printf(TEXT("stat_0 lvl : ")) + FString::FromInt(lvl));
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Blue, FString::Printf(TEXT("SelectWeapon : ")) + FString::FromInt(gameinstance->SelectedWeaponCode));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Blue, FString::Printf(TEXT("stat_0 lvl : ")) + FString::FromInt(lvl));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Blue, FString::Printf(TEXT("SelectWeapon : ")) + FString::FromInt(gameinstance->SelectedWeaponCode));
 
 		auto player = Cast<ATPS_Character>(this->GetPawn());
 		if (player) {
@@ -98,7 +98,7 @@ void ATPSPlayerController::OpenInGameMenu()
 void ATPSPlayerController::CloseInGameMenu()
 {
 	if (InGameMenu_Instance) {
-		InGameMenu_Instance->RemoveFromParent();
+		InGameMenu_Instance->RemoveFromViewport();
 
 		FInputModeGameOnly Mode;
 		SetInputMode(Mode);
@@ -148,7 +148,7 @@ void ATPSPlayerController::CloseInteractionUI()
 {
 	auto player = Cast<ATPS_Character>(this->GetPawn());
 	if (InteractionUI_Instance && !player->GetbDead()) {
-		InteractionUI_Instance->RemoveFromParent();
+		InteractionUI_Instance->RemoveFromViewport();
 	}
 }
 
@@ -194,7 +194,7 @@ void ATPSPlayerController::OpenInGameData()
 void ATPSPlayerController::CloseInGameData()
 {
 	if (StageDatawidget_Instance) {
-		StageDatawidget_Instance->RemoveFromParent();
+		StageDatawidget_Instance->RemoveFromViewport();
 
 		FInputModeGameOnly Mode;
 		SetInputMode(Mode);

@@ -19,5 +19,5 @@ void ALoobyUIPlayerController::BeginPlay()
 	SetInputMode(Mode);
 	bShowMouseCursor = true;
 
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("Loby"));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("Loby"));
 }

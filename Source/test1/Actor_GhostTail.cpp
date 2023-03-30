@@ -11,20 +11,6 @@ AActor_GhostTail::AActor_GhostTail()
 	PrimaryActorTick.bCanEverTick = true;
 
 	PoseMesh = CreateDefaultSubobject<UPoseableMeshComponent>(TEXT("POSEABLEMESH"));
-
-	/*ConstructorHelpers::FObjectFinder<USkeletalMesh> SK_PoseMesh(TEXT("SkeletalMesh"));
-	if (SK_PoseMesh.Succeeded())
-	{
-		PoseMesh->SetSkeletalMesh(SK_PoseMesh.Object);
-	}*/
-
-	/*ConstructorHelpers::FObjectFinder<UMaterialInstance> M_GhostTail(TEXT("MaterialInstanceConstanttTail'"));
-	if (M_GhostTail.Succeeded())
-	{
-		GhostMaterial = M_GhostTail.Object;
-	}*/
-
-
 }
 
 // Called when the game starts or when spawned

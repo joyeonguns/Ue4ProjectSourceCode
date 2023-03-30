@@ -7,6 +7,7 @@
 AEnemyRange_Character::AEnemyRange_Character()
 {
 	realMoveSpeed = DefaultWalkSpeed;
+	Status_Component->SetMode(2);
 }
 
 
@@ -76,7 +77,7 @@ void AEnemyRange_Character::SpwArrow()
 		}
 	}
 	else {
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("!SpwArrow"));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("!SpwArrow"));
 	}
 }
 

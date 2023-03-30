@@ -53,6 +53,7 @@ public:
 
 	int32 GetPrize();
 
+
 protected:
 	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 	virtual void PossessedBy(AController* newController) override;

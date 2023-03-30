@@ -80,7 +80,7 @@ void UUserWidget_InGameData::OnClickNextPage()
 		Page_2->SetVisibility(ESlateVisibility::Visible);	
 	}
 
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Blue, FString::Printf(TEXT(" openpage : %d"), CurrentPage));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Blue, FString::Printf(TEXT(" openpage : %d"), CurrentPage));
 
 }
 

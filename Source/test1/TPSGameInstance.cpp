@@ -4,18 +4,7 @@
 #include "TPSGameInstance.h"
 
 UTPSGameInstance::UTPSGameInstance()
-{
-	// 무기
-	FString WeaponData_Path = TEXT("CompositeDataTable'/Game/Data/Weapons_DataTable.Weapons_DataTable'");
-	static ConstructorHelpers::FObjectFinder<UDataTable> DT_Weapon(*WeaponData_Path);
-
-	if (DT_Weapon.Succeeded()) {
-		WeaponTable = DT_Weapon.Object;
-		/*if (WeaponTable->GetRowMap().Num() > 0) {
-			WeaponTable = DT_Weapon.Object;
-
-		}*/
-	}
+{	
 
 	// 스테이지 데이터
 	FString Stage_Data_Path = TEXT("DataTable'/Game/Data/StageData.StageData'");
@@ -34,7 +23,7 @@ UTPSGameInstance::UTPSGameInstance()
 		Character_stat_Table = DT_Char_stat.Object;
 	}
 	
-	// 스텟 레벨
+	// 텔런트 레벨
 	FString StatusLevel_Path = TEXT("DataTable'/Game/Data/StatusLevel.StatusLevel'");
 	static ConstructorHelpers::FObjectFinder<UDataTable> DT_StatLevel(*StatusLevel_Path);
 
@@ -60,13 +49,6 @@ UTPSGameInstance::UTPSGameInstance()
 
 	statusArray.Init(6,8);
 
-	for (int i = 0; i < 3; i++) {
-		UnLockItemList.Add(0);
-	}	
-
-	for (int i = 0; i < 12; i++) {
-		LockItemList.Add(0);
-	}
 }
 
 void UTPSGameInstance::Init()
@@ -78,10 +60,6 @@ void UTPSGameInstance::Init()
 	
 }
 
-FWeaponData* UTPSGameInstance::Weapons_Data(int32 code)
-{
-	return WeaponTable->FindRow<FWeaponData>(*FString::FromInt(code), TEXT(""));
-}
 
 FStageDataTable* UTPSGameInstance::Get_FStageDataTable(int32 level)
 {
