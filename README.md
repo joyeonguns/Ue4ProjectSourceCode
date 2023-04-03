@@ -16,7 +16,7 @@
     <summary>자세히</summary>
 
 
-![스크린샷 2023-03-31 052810](https://user-images.githubusercontent.com/85017198/228956615-da278aba-7889-4aa5-9b30-9af6976d4446.png)
+![flow](https://user-images.githubusercontent.com/85017198/229432749-0a15e4c8-eec1-49df-b7d0-cc7f2784c60e.png)
 
 </details>
     
