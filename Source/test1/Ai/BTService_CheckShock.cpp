@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "BTService_CheckShock.h"
@@ -31,9 +31,10 @@ void UBTService_CheckShock::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* N
 	auto Enemy = Cast<AEnemyBasic_Character>(OwnerComp.GetAIOwner()->GetPawn());
 
 
-
+	// 충격 상태 체크
 	bResult = (Enemy->GetCheckShocking());
 
+	// bShockKey 값 업데이트
 	OwnerComp.GetBlackboardComponent()->SetValueAsBool(AEnemy_AIController::bShockKey, bResult);
 
 	if (bResult) {
