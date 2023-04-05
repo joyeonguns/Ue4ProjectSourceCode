@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "BTTask_FindPatrollPos.h"
@@ -23,13 +23,13 @@ EBTNodeResult::Type UBTTask_FindPatrollPos::ExecuteTask(UBehaviorTreeComponent& 
 		return EBTNodeResult::Failed;
 	}
 
+	// 내비 시스템 생성
 	UNavigationSystemV1* NavSystem = UNavigationSystemV1::GetNavigationSystem(ControllingPawn->GetWorld());
 	if (!NavSystem) {
 		UE_LOG(LogTemp, Warning, TEXT("!NavSystem"));
 		return EBTNodeResult::Failed;
 	}
 
-	FVector Origin = OwnerComp.GetBlackboardComponent()->GetValueAsVector(AEnemy_AIController::PatrolPosKey);
 
 	FVector targetPos;
 	auto player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
@@ -37,9 +37,11 @@ EBTNodeResult::Type UBTTask_FindPatrollPos::ExecuteTask(UBehaviorTreeComponent& 
 		targetPos = player->GetActorLocation();
 	}
 
+	// UNavigationSystemV1을 통해 캐릭터 근처의 랜덤한 위치 생성
 	FNavLocation NextPatrolPos;
 
 	if (NavSystem->GetRandomPointInNavigableRadius(targetPos, 200.0f, NextPatrolPos)) {
+		// 블랙보드의 PatrolPosKey 초기화
 		OwnerComp.GetBlackboardComponent()->SetValueAsVector(AEnemy_AIController::PatrolPosKey, NextPatrolPos.Location);
 
 		return EBTNodeResult::Succeeded;
