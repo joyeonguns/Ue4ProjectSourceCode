@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "EnemyMelee_Character.h"
@@ -35,6 +35,8 @@ void AEnemyMelee_Character::PostInitializeComponents()
 void AEnemyMelee_Character::BeginPlay()
 {
 	Super::BeginPlay();
+	
+	// 공격 범위 설정
 	AttackRange = 150.f;
 	AttackRadius = 50.0f;
 }
@@ -48,6 +50,7 @@ void AEnemyMelee_Character::AttackCheck()
 {
 	Super::AttackCheck();
 
+	// HitResult를 통해 hit 감지
 	FHitResult HitResult;
 	FCollisionQueryParams Param(NAME_None, false, this);
 	bool bResult = GetWorld()->SweepSingleByChannel(
@@ -61,6 +64,7 @@ void AEnemyMelee_Character::AttackCheck()
 	);
 
 
+	// 디버그 프린팅
 #if ENABLE_DRAW_DEBUG
 
 	FVector TraceVec = GetActorForwardVector() * AttackRange;
@@ -84,12 +88,14 @@ void AEnemyMelee_Character::AttackCheck()
 #endif // ENABLE_DRAW_DEBUG
 
 
+	// 플레이어에게 데미지
 	if (bResult) {
 		if (HitResult.Actor.IsValid()) {
 			if (HitResult.Actor->ActorHasTag("Player")) {
 				FDamageEvent DamageEvent;
 				float Damage = Status_Component->Getcurrent_Status()->Damage;
 
+				// 특성 적용
 				int32 percent = Status_Component->Getcurrent_Status()->percentage;
 				int32 rnd = FMath::RandRange(0, 99);
 				if (rnd < percent) Damage *= 2;
