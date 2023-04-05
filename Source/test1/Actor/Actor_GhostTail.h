@@ -24,7 +24,7 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-
+	// Set Initial Setting
 	void Init(USkeletalMeshComponent* Pawn);
 
 	UPROPERTY(Editanywhere, Category = Mesh)
@@ -36,6 +36,7 @@ public:
 	UPROPERTY(Editanywhere, Category = Mat)
 		TArray<UMaterialInstanceDynamic*> Materials;
 
+	// Data
 	bool bGhostSpwn = false;
 	float currentGhostTime;
 	float GhostDuration = 1.0f;

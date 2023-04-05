@@ -10,6 +10,7 @@ AActor_GhostTail::AActor_GhostTail()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	// PoseableMeshComponent »ý¼º
 	PoseMesh = CreateDefaultSubobject<UPoseableMeshComponent>(TEXT("POSEABLEMESH"));
 }
 
@@ -25,6 +26,7 @@ void AActor_GhostTail::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	// CurrentGhostTime Check
 	if (bGhostSpwn) {
 		currentGhostTime -= DeltaTime;
 		for (int i = 0; i < Materials.Num(); i++)
@@ -41,6 +43,7 @@ void AActor_GhostTail::Tick(float DeltaTime)
 
 void AActor_GhostTail::Init(USkeletalMeshComponent* Pawn)
 {
+	// Set PoseMesh And Materials
 	PoseMesh->CopyPoseFromSkeletalComponent(Pawn);
 	TArray<UMaterialInterface*> Mats = PoseMesh->GetMaterials();
 
@@ -49,6 +52,8 @@ void AActor_GhostTail::Init(USkeletalMeshComponent* Pawn)
 		Materials.Add(UKismetMaterialLibrary::CreateDynamicMaterialInstance(GetWorld(), GhostMaterial));
 		PoseMesh->SetMaterial(i, Materials[i]);
 	}
+
+	// Set Initial data
 	currentGhostTime = GhostDuration;
 	bGhostSpwn = true;
 }
