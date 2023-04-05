@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -24,6 +24,7 @@ public:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 
+	// 블랙보드 변수이름
 	static const FName HomePosKey;
 	static const FName PatrolPosKey;
 	static const FName TargetKey;
@@ -31,13 +32,14 @@ public:
 	static const FName bCanAttackKey;
 	static const FName bShockKey;
 
+	// AI Perception 데이터
 	float AISightRadius = 500.0f;
 	float AISightAge = 50.f;
 	float AILoseSightRadius = AISightRadius + 100.0f;
 	float AIFieldOfView = 90.0f;
 	class UAISenseConfig_Sight* SightConfig;
 
-
+	// Get 타겟
 	class ATPS_Character* GetPlayer();
 	
 
@@ -47,11 +49,6 @@ public:
 	UFUNCTION()
 		void OnDetected(const TArray<AActor*> &DetectedActor);
 
-protected:
-
-
-private:
-	void OnRepeatTimer();
 
 private:
 	FTimerHandle ReapeatTimeHandler;

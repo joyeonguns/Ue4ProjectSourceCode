@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "Enemy_AIController.h"
@@ -10,6 +10,7 @@
 #include "Perception/AIPerceptionComponent.h"
 #include "Perception/AISenseConfig_Sight.h"
 
+// 블랙보드 변수 
 const FName AEnemy_AIController::HomePosKey(TEXT("HomePos"));
 const FName AEnemy_AIController::PatrolPosKey(TEXT("PatrolPos"));
 const FName AEnemy_AIController::TargetKey(TEXT("Target"));
@@ -22,6 +23,7 @@ AEnemy_AIController::AEnemy_AIController()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
+	// AI Perception 제작
 	SightConfig = CreateDefaultSubobject<UAISenseConfig_Sight>(TEXT("Sight_Config"));
 	SetPerceptionComponent(*CreateDefaultSubobject<UAIPerceptionComponent>(TEXT("Perception Component")));
 	
@@ -35,16 +37,19 @@ AEnemy_AIController::AEnemy_AIController()
 	SightConfig->DetectionByAffiliation.bDetectNeutrals = true;
 
 	GetPerceptionComponent()->SetDominantSense(*SightConfig->GetSenseImplementation());
+
+	// 감지 
 	GetPerceptionComponent()->OnPerceptionUpdated.AddDynamic(this, &AEnemy_AIController::OnDetected);
 	GetPerceptionComponent()->ConfigureSense(*SightConfig);
 
 
-
+	// FObjectFinder로 블랙보드 연결
 	static ConstructorHelpers::FObjectFinder<UBlackboardData> BBObject(TEXT("BlackboardData'/Game/BeHaviorTree/BB_EnemyAiBoard.BB_EnemyAiBoard'"));
 	if (BBObject.Succeeded()) {
 		BBAsset = BBObject.Object;
 	}
 
+	// FObjectFinder BehaviorTree 연결
 	static ConstructorHelpers::FObjectFinder<UBehaviorTree> BTObject(TEXT("BehaviorTree'/Game/BeHaviorTree/BT_EnemyAiTree.BT_EnemyAiTree'"));
 	if (BTObject.Succeeded()) {
 		BTAsset = BTObject.Object;
@@ -56,8 +61,8 @@ AEnemy_AIController::AEnemy_AIController()
 void AEnemy_AIController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
-	//GetWorld()->GetTimerManager().SetTimer(ReapeatTimeHandler, this, &AEnemy_AIController::OnRepeatTimer, RepeatIntervar, true);
 	
+	// 블랙보드 HomePosKey 변수 초기화
 	if (UseBlackboard(BBAsset, Blackboard)) {
 		Blackboard->SetValueAsVector(HomePosKey, InPawn->GetActorLocation());
 
@@ -98,8 +103,7 @@ ATPS_Character* AEnemy_AIController::GetPlayer()
 
 void AEnemy_AIController::OnDetected(const TArray<AActor*> &DetectedActor)
 {
-	//Player = nullptr;
-
+	// 타겟 설정
 	for (auto actor : DetectedActor) {
 		if (actor->ActorHasTag("Player")) {
 			Player = Cast<ATPS_Character>(actor);
@@ -114,27 +118,4 @@ void AEnemy_AIController::Setplayer(class ATPS_Character* _player)
 	Player = _player;
 }
 
-void AEnemy_AIController::OnRepeatTimer()
-{
 
-	auto CurrentPawn = GetPawn();
-	if (CurrentPawn) {
-		UNavigationSystemV1* NavSystem = UNavigationSystemV1::GetNavigationSystem(GetWorld());
-
-		if (!NavSystem) {
-			UE_LOG(LogTemp, Warning, TEXT("!NavSystem"));
-			return;
-		}
-
-		FNavLocation NextLocation;
-		// ���� �̵�
-		if (NavSystem->GetRandomPointInNavigableRadius(FVector::ZeroVector, 500.0f, NextLocation)) {
-			UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, NextLocation.Location);
-		}
-	}
-
-
-
-	
-
-}
