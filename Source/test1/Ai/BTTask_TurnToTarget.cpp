@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "BTTask_TurnToTarget.h"
@@ -9,6 +9,7 @@
 
 UBTTask_TurnToTarget::UBTTask_TurnToTarget()
 {
+	// 노드 이름
 	NodeName = TEXT("TurnToTarget");
 }
 
@@ -17,6 +18,7 @@ EBTNodeResult::Type UBTTask_TurnToTarget::ExecuteTask(UBehaviorTreeComponent& Ow
 	EBTNodeResult::Type Result = Super::ExecuteTask(OwnerComp, NodeMemory);
 
 
+	// Enemy Target 설정
 	auto Enemy = Cast<AEnemyBasic_Character>(OwnerComp.GetAIOwner()->GetPawn());
 
 	if (!Enemy) return EBTNodeResult::Failed;
@@ -25,6 +27,7 @@ EBTNodeResult::Type UBTTask_TurnToTarget::ExecuteTask(UBehaviorTreeComponent& Ow
 
 	if (!Target) return EBTNodeResult::Failed;
 
+	// 캐릭터 방향 설정
 	FVector LookVec = Target->GetActorLocation() - Enemy->GetActorLocation();
 	LookVec.Z = 0.f;
 
