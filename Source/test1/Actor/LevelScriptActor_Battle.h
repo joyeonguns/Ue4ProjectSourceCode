@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+ï»¿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -33,13 +33,9 @@ public:
 
 	void StageStart();
 
-	void CheckStage();
-
 	void StageClear();
 
 	void GetReWard(int32 itemCode);
-
-	void GetReWard();
 
 	void SpawnEnemy();
 
@@ -69,7 +65,7 @@ private:
 	
 	bool bliveStage;
 
-	// ½ºÆù À§Ä¡
+	// ìŠ¤í° ìœ„ì¹˜
 	UPROPERTY(EditAnywhere, Category = SpW)
 		FVector RangeSpwLoc;
 	UPROPERTY(EditAnywhere, Category = SpW)
@@ -81,14 +77,14 @@ private:
 	UPROPERTY(EditAnywhere, Category = SpW)
 		FRotator RewardSpwRot;
 
-	// Àû ½ºÆù Å¬·¡½º
+	// ì  ìŠ¤í° í´ë˜ìŠ¤
 	UPROPERTY(EditAnywhere, Category = SpW)
 		TSubclassOf<class AEnemyMelee_Character> MeleeEnemyClass;
 
 	UPROPERTY(EditAnywhere, Category = SpW)
 		TSubclassOf<class AEnemyRange_Character> RangeEnemyClass;
 
-	// º¸»ó »óÀÚ
+	// ë³´ìƒ ìƒì
 	UPROPERTY(EditAnywhere, Category = SpW)
 		TSubclassOf<class AActor_RewardBox> RewardBoxClass;
 
@@ -96,11 +92,7 @@ private:
 	class AActor_RewardBox* rightReward;
 
 
-	// Before Stage UI
-
-	// Clear Stage UI
-
-	// º¸»ó UI
+	// ë ˆë²¨ UI
 	UPROPERTY(EditAnywhere, Category = UI)
 		TSubclassOf<class UUserWidget_LevelText> RewardwidgetClass;
 

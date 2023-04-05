@@ -16,6 +16,7 @@ void ALevelScriptActor_Battle::BeginPlay()
 	Super::BeginPlay();
 	BeforeStage();
 
+	// 적 버프 획득 확률 가져오기
 	auto _GameInstance = Cast<UTPSGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 	EnemyBuffPercent = _GameInstance->statusArray[5];
 
@@ -39,23 +40,21 @@ void ALevelScriptActor_Battle::BeforeStage()
 
 
 	if (currentStage <= 5) {
+		// UI 생성
 		SpawnComment(currentStage);
 
+		// 3초후 StageStart 함수 호출
 		FTimerHandle th;
 		GetWorldTimerManager().SetTimer(th, this, &ALevelScriptActor_Battle::StageStart, 3.0f, false);
 	}
-	else {
-		
-	}
-
-	
 }
 
 void ALevelScriptActor_Battle::StageStart()
 {
+	// UI 제거
 	DeleteComment();
 
-
+	// 적 스테이지 맞는 스폰 데이터 저장
 	auto _GameInstance = Cast<UTPSGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 	if (_GameInstance) {
 		_GameInstance->BattleData_Enemy->Melee = _GameInstance->Get_FStageDataTable(currentStage)->Melee;
@@ -68,51 +67,25 @@ void ALevelScriptActor_Battle::StageStart()
 		BossEnemyCount = _GameInstance->BattleData_Enemy->Boss;
 	}
 
+	// 살아있는 적 초기화
 	live_StageEnemy = RangeEnemyCount + MeleeEnemyCount + BossEnemyCount;
+	
+	// 적 생성
 	SpawnEnemy();
 
 	bliveStage = true;
-	/*switch (currentStage)
-	{
-	case 1:		
-		RangeEnemyCount = 1;
-		MeleeEnemyCount = 0;
-		BossEnemyCount = 0;
-		live_StageEnemy = RangeEnemyCount + MeleeEnemyCount + BossEnemyCount;
-		SpawnEnemy();
-		break;
-
-	case 2:
-		RangeEnemyCount = 3;
-		MeleeEnemyCount = 2;
-		BossEnemyCount = 0;
-		live_StageEnemy = RangeEnemyCount + MeleeEnemyCount + BossEnemyCount;
-		SpawnEnemy();
-		break;
-
-	case 3:
-		RangeEnemyCount = 5;
-		MeleeEnemyCount = 3;
-		BossEnemyCount = 0;
-		live_StageEnemy = RangeEnemyCount + MeleeEnemyCount + BossEnemyCount;
-		SpawnEnemy();
-		break;
-
-	default:
-		live_StageEnemy = 100;
-		break;
-	}*/
 }
 
 void ALevelScriptActor_Battle::SpawnEnemy()
 {
+	// 적 레벨 가져오기
 	int level = 0;
 	auto _GameInstance = Cast<UTPSGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 	if (_GameInstance) {
 		level = _GameInstance->statusArray[4];
 	}
 	
-
+	// 근거리 적 소환
 	for (int i = 0; i < MeleeEnemyCount; i++) {
 		
 		FVector SpwLoc = MeleeSpwLoc + FVector(0, -300, 0) * i;
@@ -122,13 +95,15 @@ void ALevelScriptActor_Battle::SpawnEnemy()
 		auto melee = world->SpawnActor<AEnemyMelee_Character>(MeleeEnemyClass, SpwLoc, SpwRot, SpawnInfo);
 
 		if (melee) {
+			// OnDeadDelegate에 EnemySignal 연결
 			melee->OnDeadDelegate.AddUObject(this, &ALevelScriptActor_Battle::EnemySignal);
 			melee->SetPrize(melee->GetPrize() + level);
 
+			// 버프 적용
 			int32 rand = FMath::RandRange(0, 9);
 			if (rand < EnemyBuffPercent) {
 				melee->SetPrize(melee->GetPrize() * 2);
-				// 버프
+				
 				int32 randBuff = FMath::RandRange(1, 5);
 				switch (randBuff)
 				{
@@ -159,6 +134,8 @@ void ALevelScriptActor_Battle::SpawnEnemy()
 		
 	}
 
+
+	// 원거리 적 소환
 	for (int i = 0; i < RangeEnemyCount; i++) {
 
 		FVector SpwLoc = RangeSpwLoc + FVector(-300, 0, 0) * i;
@@ -168,12 +145,13 @@ void ALevelScriptActor_Battle::SpawnEnemy()
 		auto range = world->SpawnActor<AEnemyRange_Character>(RangeEnemyClass, SpwLoc, SpwRot, SpawnInfo);
 
 		if (range) {
+			// OnDeadDelegate에 EnemySignal 연결
 			range->OnDeadDelegate.AddUObject(this, &ALevelScriptActor_Battle::EnemySignal);
 			range->SetPrize(range->GetPrize() + level);
 
+			// 버프
 			int32 rand = FMath::RandRange(0, 9);
 			if (EnemyBuffPercent) {
-				// 버프
 				range->SetPrize(range->GetPrize() * 2);
 				int32 randBuff = FMath::RandRange(1, 5);
 				switch (randBuff)
@@ -208,10 +186,10 @@ void ALevelScriptActor_Battle::SpawnEnemy()
 
 void ALevelScriptActor_Battle::EnemySignal()
 {
+	// 적 죽을시 호출되는 함수
 	live_StageEnemy--;
 
-	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Enemy : ")) + FString::FormatAsNumber(live_StageEnemy));
-
+	// 스테이지 클리어 체크
 	if (live_StageEnemy <= 0 && bliveStage) {
 		live_StageEnemy = 0;
 		bliveStage = false;
@@ -222,26 +200,26 @@ void ALevelScriptActor_Battle::EnemySignal()
 
 void ALevelScriptActor_Battle::StageClear()
 {
+	// 보상 생성
 	if (currentStage < 5) {
 		auto player = Cast<ATPS_Character>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 		if (player) {
 			player->ResetBuff();
 		}
 
-
-
+		// Reward 생성
 		SpawnRewardBox();
 
-		// Reward 생성
+		// Reward UI 생성
 		SpawnComment();
 	}
+	// 게임 클리어
 	else {
 		// UI 출력
 		if (!RewardwidgetInstance) {
 			RewardwidgetInstance = CreateWidget<UUserWidget_LevelText>(GetWorld(), RewardwidgetClass);
 		}
-
-		if (RewardwidgetInstance) {
+		else if (RewardwidgetInstance) {
 			RewardwidgetInstance->SetComments_GameClear();
 			RewardwidgetInstance->AddToViewport();
 		}
@@ -251,8 +229,10 @@ void ALevelScriptActor_Battle::StageClear()
 
 void ALevelScriptActor_Battle::SpawnRewardBox()
 {
+	// 버프 설정
 	SetBuffCode();
 
+	// 보상 상자 생성
 	FVector spwLoc = RewardSpwLoc;
 	FRotator spwRot = RewardSpwRot;
 	FActorSpawnParameters SpawnInfo;
@@ -264,6 +244,7 @@ void ALevelScriptActor_Battle::SpawnRewardBox()
 
 	if (leftReward && rightReward) {
 		leftReward->SetBuff(BuffCode_left);
+		// OnEndReward 함수 초기화
 		leftReward->OnEndReward.AddLambda([this]()-> void {
 
 			GetReWard(BuffCode_left);
@@ -289,26 +270,29 @@ void ALevelScriptActor_Battle::SpawnRewardBox()
 
 void ALevelScriptActor_Battle::SetBuffCode()
 {
+	// 겹치지 않는 랜덤 코드 2개 생성 
 	TArray<int32> MyArray;
 
-	// populate the array with some values
 	MyArray.Add(0);
 	MyArray.Add(1);
 	MyArray.Add(2);
 	MyArray.Add(3);
 	MyArray.Add(4);
 
-	// shuffle the array using the FMath::RandRange function
+	// FMath::RandRange 배열 셔플
 	for (int32 Index = 0; Index < MyArray.Num(); Index++)
 	{
 		const int32 RandomIndex = FMath::RandRange(0, MyArray.Num() - 1);
 		MyArray.Swap(Index, RandomIndex);
 	}
 
+	// 버프 코드 할당
 	BuffCode_right = MyArray[0];
 	BuffCode_left = MyArray[1];
 }
 
+
+// *** UI 생성
 void ALevelScriptActor_Battle::SpawnComment(int32 stage)
 {
 	// UI 출력
@@ -344,28 +328,16 @@ void ALevelScriptActor_Battle::DeleteComment()
 		RewardwidgetInstance = nullptr;
 	}
 }
-
-void ALevelScriptActor_Battle::CheckStage()
-{
-
-}
+// ** UI
 
 void ALevelScriptActor_Battle::GetReWard(int32 itemCode)
 {
+	// Ui 제거
 	DeleteComment();
-
-	// Ui 출력
-	if (RewardwidgetInstance) {
-		RewardwidgetInstance->RemoveFromParent();
-	}
 
 	FTimerHandle th;
 	GetWorldTimerManager().SetTimer(th, this, &ALevelScriptActor_Battle::BeforeStage, 5.0f, false);
 
 }
 
-void ALevelScriptActor_Battle::GetReWard()
-{
-	GetReWard(5);
-}
 
