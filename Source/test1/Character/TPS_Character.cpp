@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "TPS_Character.h"
@@ -20,11 +20,14 @@ ATPS_Character::ATPS_Character()
 	isCanMove = true;
 	isCanRotate = true;
 
+
+	// 스킬 쿨타임 설정
 	Def_CooTime_Q = 10.0f;
 	Def_CooTime_E = 10.0f;
 	Def_CooTime_1 = 10.0f;
 	Def_CooTime_2 = 10.0f;
 
+	// playerController 할당
 	playerController = Cast<ATPSPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 }
 
@@ -44,7 +47,6 @@ void ATPS_Character::EquipWeapon(AWeapon_Actor* Weapon)
 {
 	if (Weapon) {
 		SetCurrentWeapon(Weapon, CurrentWeapon);
-		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("EQUIP WEAPON !!"));
 	}
 }
 
@@ -52,6 +54,7 @@ void ATPS_Character::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 
+	// Status_Component 델리케이트 함수 연결
 	Status_Component->OnHpIsZero.AddLambda([this]() -> void {
 		if (playerController) {
 			playerController->InputKeyESC();
@@ -59,6 +62,8 @@ void ATPS_Character::PostInitializeComponents()
 		});
 	Status_Component->OnTakeDamage_Param.AddUObject(this, &ATPS_Character::TakeDamageAplly);
 
+
+	// AnimInstance 델리게이트 함수 연결
 	Anim = Cast<UTPSAnimInstance>(GetMesh()->GetAnimInstance());
 
 	if (Anim) {
@@ -160,6 +165,7 @@ float ATPS_Character::TakeDamage(float Damage, FDamageEvent const& DamageEvent, 
 {
 	float realDamage;
 
+	// 크리티컬 
 	bool bcritical = false;
 	auto Causer = Cast<ABasic_Character>(DamageCauser);
 
@@ -169,9 +175,11 @@ float ATPS_Character::TakeDamage(float Damage, FDamageEvent const& DamageEvent, 
 	if (randNum < critical) bcritical = true;
 
 	if (bcritical) {
+		// 크리티컬
 		realDamage = Super::TakeDamage(Damage * 1.5f, DamageEvent, EventInstigator, DamageCauser);
 	}
 	else {
+		// 크리티컬 X
 		realDamage = Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
 	}
 
@@ -188,17 +196,17 @@ void ATPS_Character::BeginPlay()
 {
 	Super::BeginPlay();
 	
-
-
+	// OnHpApply 호출시 Hpbar상태 업데이트
 	Status_Component->OnHpApply.AddUObject(this, &ATPS_Character::HpUIAplly);
 	
+	// 초기 상태 값 
 	bDisarm = false;
 	current_CooTime_Q = 10.0f;
 	current_CooTime_E = 10.0f;
 	current_CooTime_1 = 10.0f;
 	current_CooTime_2 = 10.0f;
 	
-
+	// SchoolCode 초기화
 	FString School = Status_Component->Getcurrent_Status()->School;
 	SchoolCode = 0;
 	if (School == "fire") {
@@ -211,10 +219,11 @@ void ATPS_Character::BeginPlay()
 		SchoolCode = 3;
 	}
 
+	// 아이템 가득 
 	SetItemCount_Heal(MaxItemCount_Heal);
 	SetItemCount_Reinforce(MaxCount_Reinforce);
 
-
+	// 포인트UI 설정
 	auto gameInstace = Cast<UTPSGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 	if (gameInstace) {
 		if (playerController) {
@@ -226,6 +235,7 @@ void ATPS_Character::BeginPlay()
 
 void ATPS_Character::ControllMode(int32 mode)
 {
+	// 카메라 및 스프링 암 조정
 	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>(TEXT("SPRINGARM"));
 	TPSCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("CAMERA"));
 
@@ -299,26 +309,32 @@ void ATPS_Character::SpwnObjSkill_Q_2()
 
 void ATPS_Character::DashFront()
 {
+	// 전진 배기
+
+	// 전진 방향 설정
 	FRotator rot = GetActorRotation();
 	FRotator YawRotation(0, rot.Yaw, 0);
 
 	FVector dir = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
 
 	
-
+	// 마찰력 0.0f 설정 
 	GetCharacterMovement()->BrakingFrictionFactor = 0.0f;
+	// 캐릭터 전진
 	LaunchCharacter(dir * 10000, true, true);
 
+	// 0.1초후 캐릭터 멈춤
 	FTimerHandle th;
 	GetWorldTimerManager().SetTimer(th, this, &ATPS_Character::StopDash, 0.1f, false);
 	
+	// 시간을 5배 느리게함
 	GetWorldSettings()->SetTimeDilation(0.2f);
 
+	// 캐릭터가 벽과 다른 캐릭터를 통과하기 위해 매쉬와 캡슐컴포넌트 NoCollision
 	GetCapsuleComponent()->SetCollisionProfileName(TEXT("NoCollision"));
 	GetMesh()->SetCollisionProfileName(TEXT("NoCollision"));
 
-	//TPSCameraComponent->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
-
+	// 멀티채널로 Hit 감지
 	TArray<FHitResult> HitResults;
 	FCollisionQueryParams Param(NAME_None, false, this);
 	bool bResult = GetWorld()->SweepMultiByChannel(
@@ -331,7 +347,7 @@ void ATPS_Character::DashFront()
 		Param
 	);
 
-
+	// 디버그 프린팅
 #if ENABLE_DRAW_DEBUG
 
 	FVector TraceVec = GetActorForwardVector() * 1000;
@@ -354,7 +370,7 @@ void ATPS_Character::DashFront()
 
 #endif // ENABLE_DRAW_DEBUG
 
-
+	// 부딫힌 적들에게 데미지 적용
 	if (bResult) {
 		for (auto hit : HitResults) {
 			if (hit.Actor.IsValid()) {
@@ -362,36 +378,33 @@ void ATPS_Character::DashFront()
 					FDamageEvent DamageEvent;
 					float Damage = Status_Component->Getcurrent_Status()->Damage * 2;
 
-					/*int32 percent = Status_Component->Getcurrent_Status()->percentage;
-					int32 rnd = FMath::RandRange(0, 99);
-					if (rnd < percent) Damage *= 2;*/
-
-
 					hit.Actor->TakeDamage(Damage, DamageEvent, GetController(), this);
-					//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("HIT!!!"));
 				}
 			}
 		}		
 	}
-
-	//SetActorLocation(GetActorLocation() + dir * 1000);
 }
 
 void ATPS_Character::StopDash()
 {
+	// 캐릭터의 속도를 멈춘다.
 	GetCharacterMovement()->StopMovementImmediately();
 
+	// 마찰력 초기화
 	GetCharacterMovement()->BrakingFrictionFactor = 2.f;
+	
+	// 월드 시간딜레이 초기화
 	GetWorldSettings()->SetTimeDilation(1.0f);
 
+	// 컬리전 초기롸
 	GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
 	GetMesh()->SetCollisionProfileName(TEXT("CharacterMesh"));
 
-	//TPSCameraComponent->SetupAttachment(SpringArmComponent);
 }
 
 void ATPS_Character::Rolling()
 {
+	// 구르기 수행
 	if (!broll) {
 		TakeShock();
 
@@ -403,9 +416,11 @@ void ATPS_Character::Rolling()
 
 		rollEndLoc = rollStartLoc + dir * 700;
 
+		// 애님몽타주 실행
 		if(RollingFront_AnimMontage)
 			PlayAnimMontage(RollingFront_AnimMontage , 1/0.7f);
 
+		// 잔상 생성
 		SpawnGhostTail();
 
 	}
@@ -413,14 +428,19 @@ void ATPS_Character::Rolling()
 
 void ATPS_Character::MoveRolling(float deltaTime)
 {
+	// Tick 함수에서 실행
 	if (broll) {
 		currentRollingTime += deltaTime;
 
 		FVector dir = (rollEndLoc - rollStartLoc).GetSafeNormal();
+
+		// Lerp를 통해 캐릭터 위치 변경
 		SetActorLocation(FMath::Lerp(rollStartLoc, rollEndLoc, currentRollingTime / RollingDuration));
 
+		// Notifyhit 함수를 호출하기위해 캐릭터에 힘을 가함
 		LaunchCharacter(dir, false, false);
 
+		// 구르기 끝
 		if (currentRollingTime >= RollingDuration) {
 			CurrentReinforceTime = RollingDuration;
 			broll = false;
@@ -431,6 +451,7 @@ void ATPS_Character::MoveRolling(float deltaTime)
 
 void ATPS_Character::NotifyHit(UPrimitiveComponent* MyComp, AActor* Other, UPrimitiveComponent* OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit)
 {
+	// 벽에 부딫힐 경우 구르기 목표 위치 초기화
 	if (Other->ActorHasTag("Wall")) {
 		currentRollingTime = RollingDuration;
 		rollEndLoc = GetActorLocation();
@@ -441,6 +462,8 @@ void ATPS_Character::NotifyHit(UPrimitiveComponent* MyComp, AActor* Other, UPrim
 
 void ATPS_Character::SpawnGhostTail()
 {
+	// 잔상 생성
+
 	FVector spwLoc = GetActorLocation() - FVector(0,0,90);
 	FRotator spwRot = GetActorRotation() - FRotator(0,90,0);
 	FActorSpawnParameters spwInfo;
@@ -479,6 +502,7 @@ void ATPS_Character::ApplyReinforce()
 		SpwnReinforceAura();
 	}
 
+	// Reinforce아이템 횟수 감소
 	SetItemCount_Reinforce(CurrentCount_Reinforce - 1);
 	
 	bReinforce = true;
@@ -495,6 +519,7 @@ void ATPS_Character::SetItemCount_Reinforce(int32 itemCount)
 	}
 
 	if (playerController != nullptr) {
+		// Reinforce 아이템 횟수 UI적용 
 		playerController->GetHUD()->SetItemCount_2(CurrentCount_Reinforce);
 	}
 }
@@ -508,6 +533,8 @@ void ATPS_Character::InputInterection()
 void ATPS_Character::ApplyBuff_Heart()
 {
 	Super::ApplyBuff_Heart();
+
+	//아이템 횟수 초기화
 	SetItemCount_Heal(MaxItemCount_Heal);
 }
 
@@ -515,6 +542,7 @@ void ATPS_Character::ApplyBuff_Energy()
 {
 	Super::ApplyBuff_Energy();
 
+	// 특성 확률 2배 증가
 	auto _GameInstance = Cast<UTPSGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 	if (_GameInstance) {
 		_GameInstance->BattleData_Player->School_Percent *=2;
@@ -526,8 +554,10 @@ void ATPS_Character::ApplyBuff_Arcane()
 {
 	Super::ApplyBuff_Arcane();
 	if (Status_Component) {
+		// 스킬가속 증가
 		Skill_Acceleration = Status_Component->Getcurrent_Status()->CoolTime + AddSpeed;
 
+		// 캐릭터 전투스텟정보 할당
 		auto _GameInstance = Cast<UTPSGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 		if (_GameInstance) {
 			_GameInstance->BattleData_Player->Speed = AddSpeed;
@@ -551,6 +581,7 @@ void ATPS_Character::ResetBuff()
 	if (ApplyBuffCode == 3) {
 		Skill_Acceleration = Status_Component->Getcurrent_Status()->CoolTime;
 
+		// 캐릭터 전투스텟정보 할당
 		auto _GameInstance = Cast<UTPSGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 		if (_GameInstance) {
 			_GameInstance->BattleData_Player->Speed = 0;
@@ -558,6 +589,7 @@ void ATPS_Character::ResetBuff()
 		}		
 	}
 	else if (ApplyBuffCode == 2) {
+		// Energy 버프 초기화
 		auto _GameInstance = Cast<UTPSGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 		if (_GameInstance) {
 			_GameInstance->BattleData_Player->School_Percent /= 2;
@@ -571,13 +603,14 @@ void ATPS_Character::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	// 스킬 가속
 	float AccellTime = DeltaTime * (100 + Skill_Acceleration) * 0.01f;
+
+	// 스킬 쿨타임 계산
 	if (coolDown_Q == false) {
 		current_CooTime_Q += AccellTime;
 		if (current_CooTime_Q >= Def_CooTime_Q) {
 			coolDown_Q = true;
-
-			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("CoolDown Q On"));
 		}
 	}
 
@@ -585,8 +618,6 @@ void ATPS_Character::Tick(float DeltaTime)
 		current_CooTime_E += AccellTime;
 		if (current_CooTime_E >= Def_CooTime_E) {
 			coolDown_E = true;
-
-			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("CoolDown E On"));
 		}
 	}
 
@@ -594,8 +625,6 @@ void ATPS_Character::Tick(float DeltaTime)
 		current_CooTime_1 += AccellTime;
 		if (current_CooTime_1 >= Def_CooTime_1) {
 			coolDown_1 = true;
-
-			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("CoolDown 1 On"));
 		}
 	}
 
@@ -603,11 +632,10 @@ void ATPS_Character::Tick(float DeltaTime)
 		current_CooTime_2 += AccellTime;
 		if (current_CooTime_2 >= Def_CooTime_2) {
 			coolDown_2 = true;
-
-			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("CoolDown 2 On"));
 		}
 	}
 
+	// Reinforce 버프효과
 	if (bReinforce) {
 		CurrentReinforceTime += DeltaTime;
 		if (Status_Component != nullptr) {
@@ -621,11 +649,14 @@ void ATPS_Character::Tick(float DeltaTime)
 		}
 	}
 
+	// 스킬 쿨다운 UI 적용
 	playerController->HUDCoolDownUpdate(Def_CooTime_Q ,current_CooTime_Q  ,
 		Def_CooTime_E, current_CooTime_E,
 		Def_CooTime_1, current_CooTime_1,
 		Def_CooTime_2, current_CooTime_2);
 
+
+	// 구르기 
 	MoveRolling(DeltaTime);
 
 }
@@ -635,12 +666,12 @@ void ATPS_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-	// �� ����
+	// 축 매핑
 	InputComponent->BindAxis("MoveForward", this, &ATPS_Character::MoveForward);
 	InputComponent->BindAxis("MoveRight", this, &ATPS_Character::MoveRight);
 	InputComponent->BindAxis("Turn", this, &ATPS_Character::AddControllerYawInput);
 	InputComponent->BindAxis("LookUp", this, &ATPS_Character::AddControllerPitchInput);
-	// �׼� ����
+	// 액션 매핑
 	InputComponent->BindAction("Jump", IE_Pressed, this, &ATPS_Character::StartJump);
 	InputComponent->BindAction("Jump", IE_Released, this, &ATPS_Character::StopJump);
 	InputComponent->BindAction("Dash", IE_Pressed, this, &ATPS_Character::PressDash);
@@ -705,6 +736,7 @@ void ATPS_Character::StartJump()
 			Jump();			
 		}	
 		else if (jumpCount == 2) {
+			// 더블 점프
 			LaunchCharacter(FVector(0, 0, 500), false, true);
 
 			if(DoubleJump_AnimMontage)
@@ -723,19 +755,7 @@ void ATPS_Character::StopJump()
 
 void ATPS_Character::PressDash()
 {
-	/*SetGroundFriction(0.0f);
-
-	FVector DashVector = (GetVelocity().GetSafeNormal()) * 2000;
-	LaunchCharacter(DashVector, false, true);
-	PlayAnimMontage(Dash_AnimMontage, 0.2f);
-
-
-	FTimerHandle TH_Friction;
-	GetWorldTimerManager().SetTimer(TH_Friction, this, &ATPS_Character::ResetGroundFriction, 0.3f, false);
-	*/
-
-
-	// �뽬 ��
+	// 대쉬 온
 	if (isDash == false) {
 		isDash = true;
 		realMoveSpeed = DefaultRunSpeed;
@@ -753,11 +773,12 @@ void ATPS_Character::Attack_0()
 	if (bDisarm) return;
 
 	if (!isDuringAttack && !bShocking) {
+		// 무기 컬리전 변경
 		CurrentWeapon->ApplyAttack();
 	}
 
-	DefaultAttack(Attack_Speed);
-	
+	// 공격
+	DefaultAttack(Attack_Speed);	
 }
 
 void ATPS_Character::Disarm()
@@ -796,7 +817,7 @@ void ATPS_Character::ResetGroundFriction()
 
 void ATPS_Character::HpUIAplly()
 {
-	//auto playerController = Cast<ATPSPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+	// Hpbar UI 적용
 	if (playerController) {
 		playerController->GetHUD()->SetHP(Status_Component->GetHpRatio(), 1.f);
 	}
@@ -805,6 +826,7 @@ void ATPS_Character::HpUIAplly()
 
 void ATPS_Character::TakeDamageAplly(float _damage)
 {
+	// 데미지 수치 UI 적용
 	if (playerController) {
 		playerController->GetHUD()->SetTakeDamage(_damage);
 	}
@@ -820,16 +842,13 @@ void ATPS_Character::InputSkill_Q()
 		current_CooTime_Q = 0.0f;
 
 		if(Skill_Q_AnimMontage)
-			PlayAnimMontage(Skill_Q_AnimMontage);
-
-		
+			PlayAnimMontage(Skill_Q_AnimMontage);		
 		
 
 		isDuringAttack = true;
 		isCanJump = false;
 		isCanMove = false;
 		isCanRotate = false;
-
 	}
 	
 }
@@ -847,13 +866,10 @@ void ATPS_Character::InputSkill_E()
 			PlayAnimMontage(Skill_E_AnimMontage);
 
 
-
-
 		isDuringAttack = true;
 		isCanJump = false;
 		isCanMove = false;
 		isCanRotate = false;
-
 	}
 }
 
@@ -896,7 +912,7 @@ void ATPS_Character::SetItemCount_Heal(int32 itemCount)
 		CurrentItemCount_Heal = MaxItemCount_Heal;
 	}
 
-	// UI ����
+	// UI 적용
 	if (playerController == nullptr) {
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("playerController Null"));
 		return;

@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -41,8 +41,9 @@ protected:
 	void ControllMode(int32 mode);
 
 	// *** // weapon ***
-	//USkeletalMeshComponent* WeaponComponent;
+	
 
+	// 무기 부착소켓 이름
 	UPROPERTY(EditDefaultsOnly, Category = Inventory)
 	FName DisarmPoint;
 
@@ -72,7 +73,8 @@ public:
 
 	virtual float TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 
-	// *** // skill ***
+	// ***  skill ***
+	//	skill Q 번개배기
 	UPROPERTY(EditAnywhere, Category = Anim)
 		UAnimMontage* Skill_Q_AnimMontage;
 
@@ -84,6 +86,7 @@ public:
 	void SpwnObjSkill_Q_2();
 
 
+	//	skill E 전진배기
 	UPROPERTY(EditAnywhere, Category = Anim)
 		UAnimMontage* Skill_E_AnimMontage;
 
@@ -91,6 +94,7 @@ public:
 	void StopDash();
 
 	
+	// skill Rolling
 	UPROPERTY(EditAnywhere, Category = Anim)
 		UAnimMontage* RollingFront_AnimMontage;
 	
@@ -111,6 +115,7 @@ public:
 	virtual void NotifyHit(UPrimitiveComponent* MyComp, AActor* Other, UPrimitiveComponent* OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit) override;
 
 
+	// 잔상 생성
 	UPROPERTY(EditAnywhere, Category = Spawn)
 		TSubclassOf<AActor_GhostTail> SpawnGhostClass;
 
@@ -122,7 +127,7 @@ public:
 
 	// *** item ***
 	
-		// ����
+		// 힐링
 	UPROPERTY(EditAnywhere, Category = Anim)
 		UAnimMontage* Healing_AnimMontage;
 
@@ -130,7 +135,7 @@ public:
 
 	void SetItemCount_Heal(int32 itemCount);
 
-		// ��ȭ
+		// 강화
 	UPROPERTY(EditAnywhere, Category = Anim)
 		UAnimMontage* Reinforce_AnimMontage;
 
@@ -196,12 +201,6 @@ public:
 	UFUNCTION()
 		void Disarm();
 
-	// *** Controlling
-
-	/*UFUNCTION()
-		void Attack_0_End();*/
-
-	
 	
 
 	UPROPERTY(VisibleAnywhere)
@@ -221,9 +220,6 @@ public:
 		UAnimMontage* DoubleJump_AnimMontage;
 	
 	
-	
-	/*UPROPERTY()
-		UHUD_UserWidget* hud;*/
 
 	void SetGroundFriction(float friction);
 	void ResetGroundFriction();
@@ -243,7 +239,7 @@ public:
 
 	void InputItem_2();
 
-	// ��ȣ�ۿ� 
+	// 상호작용 
 	void InputInterection();
 	FOnInteraction_Delegate OnInteraction;
 
@@ -254,7 +250,7 @@ private:
 
 	class ATPSPlayerController* playerController;
 
-	// ��ų
+	// 스킬
 	float current_CooTime_Q;
 	float Def_CooTime_Q;
 	bool coolDown_Q;
