@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "BTService_DetectPerception.h"
@@ -30,6 +30,7 @@ void UBTService_DetectPerception::TickNode(UBehaviorTreeComponent& OwerComp, uin
 		
 		auto pl = OwerComp.GetBlackboardComponent()->GetValueAsObject("Target");
 
+		// 플래이어 감지
 		if (!pl && player) {
 			OwerComp.GetBlackboardComponent()->SetValueAsObject(AEnemy_AIController::TargetKey, player);
 			OwerComp.GetBlackboardComponent()->SetValueAsVector(AEnemy_AIController::TargetPosKey, player->GetActorLocation());
