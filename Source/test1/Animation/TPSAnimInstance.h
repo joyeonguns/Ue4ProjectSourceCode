@@ -34,6 +34,7 @@ public:
 	// 프래임당 실행
 	virtual void NativeUpdateAnimation(float DeltaTime) override;
 
+	// 델리게이트 함수
 	FOnCanNextComboDelegate OnCanNextComboDelegate;
 	FOnAttackEndDelegate OnAttackEndDelegate;
 	FOnAttackCollision_OnDelegate OnAttackCollision_On;
