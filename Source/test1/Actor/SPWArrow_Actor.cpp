@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "SPWArrow_Actor.h"
@@ -26,6 +26,7 @@ void ASPWArrow_Actor::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	// 생성 이후 10초 후 오브젝트 제거
 	FTimerHandle th;
 	GetWorldTimerManager().SetTimer(th,this, &ASPWArrow_Actor::DestroyObj, 10.0f, true);
 }
@@ -35,53 +36,33 @@ void ASPWArrow_Actor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	// bIsShutt 참이면 오브젝트 이동
 	if (bIsShutt) {
 		SetActorLocation(GetActorLocation() + dir*20);
-
 	}
 }
 
 void ASPWArrow_Actor::NotifyActorBeginOverlap(AActor* OtherActor)
 {
+	// 캐릭터와 오버랩 + bIsShutt 참 일때 데미지 적용
 	if (OtherActor->IsA(AActor::StaticClass())) {
 		auto target = Cast<ABasic_Character>(OtherActor);
 		if (target) {
 			if (MyOwner != target && bIsShutt) {
-				UGameplayStatics::ApplyDamage(OtherActor, 10.0f, NULL, MyOwner, UDamageType::StaticClass());
-				//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Damage : 10"));
+				UGameplayStatics::ApplyDamage(OtherActor, Damage, NULL, MyOwner, UDamageType::StaticClass());
 				Destroy();
-
 			}
 		}
-		
-
-	}
-	else {
-		//bIsShutt = false;
-		//ArrowCollision->SetSimulatePhysics(false);
-		
-	}
-	
+	}	
 }
 
 void ASPWArrow_Actor::NotifyHit(UPrimitiveComponent* MyComp, AActor* Other, UPrimitiveComponent* OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit)
 {
-	//DestroyObj();
+	// 오브젝트와 부딫힐 경우 벽에 박히는 연출
 	bIsShutt = false;
 	ArrowCollision->SetSimulatePhysics(false);
 }
 
-void ASPWArrow_Actor::ApplyAttack()
-{
-}
-
-void ASPWArrow_Actor::ApplyCollision()
-{
-}
-
-void ASPWArrow_Actor::DeleteCollision()
-{
-}
 
 void ASPWArrow_Actor::DestroyObj()
 {
@@ -90,6 +71,7 @@ void ASPWArrow_Actor::DestroyObj()
 
 void ASPWArrow_Actor::Attaching(FName AttachName)
 {
+	// 부착
 	if (MyOwner) {
 		auto OwnerRange = Cast<AEnemyRange_Character>(MyOwner);
 		if (OwnerRange) {
@@ -97,7 +79,6 @@ void ASPWArrow_Actor::Attaching(FName AttachName)
 
 			RootComponent->AttachToComponent(PawnMessh, FAttachmentTransformRules::SnapToTargetIncludingScale, AttachName);
 
-			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Attaching"));
 		}
 		
 	}
@@ -106,11 +87,12 @@ void ASPWArrow_Actor::Attaching(FName AttachName)
 void ASPWArrow_Actor::Shootting()
 {
 	if (!MyOwner) return;
-
-	rot = GetActorRotation();
+	// 물리 적용 -> 중력 영향 받음
 	ArrowCollision->SetSimulatePhysics(true);
+	// 부착 해제
 	ArrowCollision->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
 
+	// 진행 방향 설정
 	if (Targets) {
 		TargetLocation = Targets->GetActorLocation();
 

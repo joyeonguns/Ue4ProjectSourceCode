@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -39,12 +39,9 @@ public:
 	virtual void NotifyHit(UPrimitiveComponent* MyComp, AActor* Other, UPrimitiveComponent* OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit) override;
 
 
-	void ApplyAttack();
-	void ApplyCollision();
-	void DeleteCollision();
-
+	// 오브젝트 제거
 	void DestroyObj();
-
+	
 	void Attaching(FName AttachName);
 	void Shootting();
 
@@ -55,6 +52,7 @@ public:
 
 	void SetDamage(float _damage);
 
+	// 참일경우 발사
 	bool bIsShutt = false;
 
 private:
@@ -63,9 +61,7 @@ private:
 		class ABasic_Character* MyOwner;
 
 	FVector TargetLocation;
-
-	FRotator rot;
-
+	 
 	FVector dir;
 	
 	class ATPS_Character* Targets;
