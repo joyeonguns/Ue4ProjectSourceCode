@@ -19,6 +19,7 @@ void AActor_SpawnSkill_Q::NotifyActorBeginOverlap(AActor* OtherActor)
 		UGameplayStatics::ApplyDamage(OtherActor, 50, NULL, myOwner, UDamageType::StaticClass());
 		auto target = Cast<ABasic_Character>(OtherActor);
 		
+		// 디버프 적용
 		if (target) {
 			if (School == "fire") {
 				target->GetDeBuff_Burn();
