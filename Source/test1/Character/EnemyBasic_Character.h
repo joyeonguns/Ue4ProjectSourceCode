@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -23,7 +23,9 @@ class TEST1_API AEnemyBasic_Character : public ABasic_Character
 public:
 	AEnemyBasic_Character();
 
+	// 플로팅 데미지 출력
 	void SpawnDamage(float damage, bool critical);
+	// HpBar 출력
 	void Set_HpBar();
 	void DrawHpBar();
 	void Delete_HpBar();
