@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "Basic_Character.h"
@@ -15,8 +15,7 @@ ABasic_Character::ABasic_Character()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	myMaxHealth = 100.0f;
-	myHealth = myMaxHealth;
+	// 초기 셋팅 설정
 	Status_Component = CreateDefaultSubobject<UCharacter_Stat_Component>(TEXT("Status"));
 
 	isCanMove = true;
@@ -39,14 +38,13 @@ ABasic_Character::ABasic_Character()
 void ABasic_Character::BeginPlay()
 {
 	Super::BeginPlay();
-	//ResetBuff();
-	//ApplyBuff_Shield();
 }
 
 void ABasic_Character::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 
+	// Status_Component 델리케이트 연결
 	Status_Component->OnHpIsZero.AddLambda([this]() -> void {
 		UE_LOG(LogTemp, Warning, TEXT("OnHpIsZero"));
 		UE_LOG(LogTemp, Warning, TEXT("DEAD"));
@@ -62,6 +60,7 @@ void ABasic_Character::PostInitializeComponents()
 		ResetAura();
 		});
 
+	// Animinstance 델리케이트 연결
 	Anim = Cast<UTPSAnimInstance>(GetMesh()->GetAnimInstance());
 
 	if (Anim) {
@@ -78,8 +77,6 @@ void ABasic_Character::PostInitializeComponents()
 
 		Anim->OnHitEnd_Enemy_Delegate.AddLambda([this]() -> void {
 			UE_LOG(LogTemp, Warning, TEXT("OnHitEnd_Enemy_Delegate"));
-			//bShocking = false;
-			//shockTime = 0.0f;
 			EndShock();
 			});
 	}
@@ -99,9 +96,10 @@ float ABasic_Character::TakeDamage(float Damage, FDamageEvent const& DamageEvent
 
 	const float realDamage = Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
 	
-
+	// 데미지 적용
 	Status_Component->SetDamage(realDamage);
 
+	// bElectric 참일경우 디버프 적용
 	if (bElectric) {
 		ApplyDeBuff_Electric();
 	}
@@ -132,24 +130,28 @@ void ABasic_Character::DieCharacter()
 		PlayAnimMontage(Death_AnimMontage);
 	}
 
+	// Collision 해제
 	SetActorEnableCollision(false);
 	bDead = true;
 	TakeShock();
+
+	// 버프오라 디버프오라 해제
 	ResetAura();
 	ResetDebuffAura();
 
+	// 3.3초후 오브젝트삭제
 	FTimerHandle TH_Attack0_End;
 	GetWorldTimerManager().SetTimer(TH_Attack0_End, this, &ABasic_Character::DestroyCharacter, 3.3f, false);
 }
 
 void ABasic_Character::DestroyCharacter()
 {
-	
 	this->Destroy();
 }
 
 void ABasic_Character::DefaultAttack(float speed)
 {
+	// 콤보어택
 	if (bShocking == false && isDuringAttack == false) {
 		if (bCanNextAttack == true && currentCombo <= MaxCombo && currentCombo != 1) {
 			//currentCombo++;
@@ -158,19 +160,16 @@ void ABasic_Character::DefaultAttack(float speed)
 			currentCombo = 1;
 		}
 
+		// 애님 몽타주의 섹션분할을 통한 콤보어택
 		FString PlaySection = "Attack_" + FString::FromInt(currentCombo);
 		PlayAnimMontage(DefaultAttack_Montage, speed, FName(*PlaySection));
 		currentCombo++;
-
-
 
 		isDuringAttack = true;
 		isCanJump = false;
 		isCanMove = false;
 		isCanRotate = false;
-
 	}
-
 }
 
 void ABasic_Character::AttackEnd()
@@ -222,7 +221,6 @@ bool ABasic_Character::GetbDead()
 
 void ABasic_Character::ApplyBuff_Heart()
 {
-	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("ABasic_Character::ApplyBuff_Heart"));
 	ApplyBuffCode = 1;
 
 	Status_Component->SetRecovery_Percent(AddRecoverHp);
@@ -235,8 +233,7 @@ void ABasic_Character::ApplyBuff_Heart()
 
 void ABasic_Character::ApplyBuff_Energy()
 {
-	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("ABasic_Character::ApplyBuff_Energy"));
-	// Ư�� ��ȭ
+	// 특성 강화
 	ApplyBuffCode = 2;
 
 	Status_Component->Getcurrent_Status()->percentage *= 2;
@@ -247,8 +244,7 @@ void ABasic_Character::ApplyBuff_Energy()
 
 void ABasic_Character::ApplyBuff_Arcane()
 {
-	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("ABasic_Character::ApplyBuff_Arcane"));
-	// ��� �ӵ� ��ȭ
+	// 모든 속도 강화
 	ApplyBuffCode = 3;
 
 	Move_Speed = (100 + AddSpeed) * 0.01f;
@@ -260,8 +256,7 @@ void ABasic_Character::ApplyBuff_Arcane()
 
 void ABasic_Character::ApplyBuff_Dia()
 {
-	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("ABasic_Character::ApplyBuff_Dia"));
-	// ��ȣõ��
+	// 수호천사
 	ApplyBuffCode = 4;
 
 	Status_Component->SetLife(AddLife);
@@ -271,8 +266,7 @@ void ABasic_Character::ApplyBuff_Dia()
 
 void ABasic_Character::ApplyBuff_Shield()
 {
-	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("ABasic_Character::ApplyBuff_Shield"));
-	// �ǰ� ����
+	// 피격 쉴드
 	ApplyBuffCode = 5;
 	Status_Component->SetShield(AddShield);
 
@@ -319,17 +313,16 @@ void ABasic_Character::ResetAura()
 
 void ABasic_Character::SpwAura(TSubclassOf<AActor> AuraClass)
 {
+	// 오라 해제
 	ResetAura();
-
 	ApplyAuraInstance = nullptr;
 
+	// 오라 생성 및 부착
 	FActorSpawnParameters spwInfo;
 	ApplyAuraInstance = GetWorld()->SpawnActor<AActor>(AuraClass, spwInfo);
 
 	if (ApplyAuraInstance) {
 		USkeletalMeshComponent* PawnMessh = GetMesh();
-		//FName AttackPoint = MyOwner->GetWeaponAttachPoint();
-		//WeaponMesh->AttachTo(PawnMessh, AttachName);
 
 		ApplyAuraInstance->GetRootComponent()->AttachTo(PawnMessh, "Aura");
 	}
@@ -338,6 +331,8 @@ void ABasic_Character::SpwAura(TSubclassOf<AActor> AuraClass)
 
 void ABasic_Character::DebuffTick(float deltaTime)
 {
+	// Tick 함수에서 실행
+	// 디버프 시간 변경
 	if (bBurnning) {
 		BurnTime -= deltaTime;
 
@@ -370,14 +365,13 @@ void ABasic_Character::SpwnDebuffAura(TSubclassOf<AActor> AuraClass)
 {
 	ResetDebuffAura();
 
+	// 디비프 오라 생성 및 부착
 	FActorSpawnParameters spwInfo;
 
 	ApplyDebuffAuraInstance = GetWorld()->SpawnActor<AActor>(AuraClass, spwInfo);
 
 	if (ApplyDebuffAuraInstance) {
 		USkeletalMeshComponent* PawnMessh = GetMesh();
-		//FName AttackPoint = MyOwner->GetWeaponAttachPoint();
-		//WeaponMesh->AttachTo(PawnMessh, AttachName);
 
 		ApplyDebuffAuraInstance->GetRootComponent()->AttachTo(PawnMessh, "Aura");
 	}
@@ -392,8 +386,11 @@ void ABasic_Character::ResetDebuffAura()
 
 void ABasic_Character::GetDeBuff_Burn()
 {
+	// 최초 Burn 디버프 획득시 
 	if (!bBurnning) {
+		// 매초 ApplyDeBuff_Burn 실행
 		GetWorldTimerManager().SetTimer(TH_burn, this, &ABasic_Character::ApplyDeBuff_Burn, 1.0f, true);
+		// 디버프오라 생성
 		SpwnDebuffAura(BurnDebuffClass);
 	}
 
@@ -403,8 +400,10 @@ void ABasic_Character::GetDeBuff_Burn()
 
 void ABasic_Character::GetDeBuff_Electric()
 {
+	// 최초 Electric 디버프 획득시 
 	if (!bElectric) {
 		ApplyDeBuff_Electric();
+		// 디버프 오라 생성
 		SpwnDebuffAura(ElectricDebuffClass);
 	}
 		
@@ -415,8 +414,11 @@ void ABasic_Character::GetDeBuff_Electric()
 
 void ABasic_Character::GetDeBuff_Wet()
 {
+	// 최촞 Wet 디버프 획득시
 	if (!bWetting) {
+		// 매 0.1초마다 ApplyDeBuff_Wet 실행
 		GetWorldTimerManager().SetTimer(TH_wet, this, &ABasic_Character::ApplyDeBuff_Wet, 0.1f, true);
+		// 디버프 오라 생성
 		SpwnDebuffAura(WetDebuffClass);	
 	}
 	bWetting = true;
@@ -427,19 +429,22 @@ void ABasic_Character::GetDeBuff_Wet()
 
 void ABasic_Character::ApplyDeBuff_Burn()
 {	
+	// 데미지 5
 	Status_Component->SetDebuffDamage(5.0);
+	// 디버프 끝
 	if (!bBurnning) {
+		// TH_burn 해제
 		GetWorldTimerManager().ClearTimer(TH_burn);
 		ResetDebuffAura();
 	}		
 }
 
 void ABasic_Character::ApplyDeBuff_Electric()
-{
-	//UGameplayStatics::ApplyDamage(this, 5.0f, NULL, this, UDamageType::StaticClass());
-	// �ִϸ��̼� ����
+{	
 	if (BeElectric_AnimMontage) {
+		// 데미지 3
 		Status_Component->SetDebuffDamage(3.0);
+		// 애니메이션 실행
 		PlayAnimMontage(BeElectric_AnimMontage);
 	}
 }
@@ -447,26 +452,28 @@ void ABasic_Character::ApplyDeBuff_Electric()
 void ABasic_Character::ApplyDeBuff_Wet()
 {
 	if (WetDebuff < 0.8f) {
+		// 속도감소
 		Move_Speed -= 0.008f;
 		Attack_Speed -= 0.004f;
+		// 감소량 저장
 		WetDebuff += 0.008f;
 		SetMoveSpeed();
 	}	
 
+	// 디버프 끝
 	if (!bWetting) {
+		// 속도 + 감소량
 		Move_Speed += WetDebuff;
 		Attack_Speed += (WetDebuff / 2);
 
+		// 감소량 초기화
 		WetDebuff = 0;
-
-
 		SetMoveSpeed();
+		// TH_wet 해제
 		GetWorldTimerManager().ClearTimer(TH_wet);
 		ResetDebuffAura();
 	}
 }
-
-
 
 void ABasic_Character::DifuseBuff()
 {

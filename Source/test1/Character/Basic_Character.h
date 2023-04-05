@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+ï»¿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -86,7 +86,7 @@ protected:
 	int32 MaxCombo;
 	int32 currentCombo;
 
-	// ¿À¶ó ½ºÆù Å¬·¡½º
+	// ì˜¤ë¼ ìŠ¤í° í´ë˜ìŠ¤
 	UPROPERTY(EditAnywhere, Category = Aura)
 		TSubclassOf<AActor> ArcaneAuraClass;
 	UPROPERTY(EditAnywhere, Category = Aura)
@@ -109,7 +109,7 @@ protected:
 
 	class AActor* ApplyDebuffAuraInstance;
 
-	// ÀüÅõ µ¥ÀÌÅÍ
+	// ì „íˆ¬ ë°ì´í„°
 	float realMoveSpeed;
 
 	float Move_Speed = 1.0;
