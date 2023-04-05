@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "BTService_Detect.h"
@@ -29,6 +29,7 @@ void UBTService_Detect::TickNode(UBehaviorTreeComponent& OwerComp, uint8* NodeMe
 
 	if (!world) return;
 
+	// FOverlapResult 를 통해 타겟 감지 360도 감지
 	TArray<FOverlapResult> OverlapResults;
 	FCollisionQueryParams CollisionQueryParam(NAME_None, false, ControllingPawn);
 	bool bResult = world->OverlapMultiByChannel(
