@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "EnemyRange_Character.h"
@@ -23,7 +23,7 @@ void AEnemyRange_Character::PostInitializeComponents()
 			AttackEnd();
 			});
 
-		Anim->OnAttackCollision_On.AddUObject(this, &AEnemyRange_Character::AttackCheck);
+		Anim->OnAttackCollision_On.AddUObject(this, &AEnemyRange_Character::SpwArrow);
 
 		Anim->OnHitStart.AddUObject(this, &AEnemyRange_Character::DropArrow);
 	}
@@ -31,7 +31,7 @@ void AEnemyRange_Character::PostInitializeComponents()
 		UE_LOG(LogTemp, Warning, TEXT("Anim_Enemy_Error"));
 	}
 
-	// ����ü �߻�
+	// 투사체 발사
 }
 
 void AEnemyRange_Character::BeginPlay()
@@ -56,21 +56,25 @@ void AEnemyRange_Character::AttackCheck()
 
 void AEnemyRange_Character::SpwArrow()
 {
-	// ȭ�� ����
+	// 화살 스폰
 	FActorSpawnParameters SpawnInfo;
 	UWorld* world = GetWorld();
 	arrowInstance = world->SpawnActor<ASPWArrow_Actor>(SpwArrowClass, SpawnInfo);
 
 	if (arrowInstance) {
 		arrowInstance->SetDamage(Status_Component->Getcurrent_Status()->Damage);
+
+		// 특성 적용
 		int32 percent = Status_Component->Getcurrent_Status()->percentage;
 		int32 rnd = FMath::RandRange(0, 99);
 		if (rnd < percent) arrowInstance->SetDamage(Status_Component->Getcurrent_Status()->Damage * 2);
 
-
+		// 오너 세팅
 		arrowInstance->SetOwner(this);
+		// 화살 부착
 		arrowInstance->Attaching(AttachName);	
 
+		// 타겟 세팅
 		auto ai = Cast<AEnemy_AIController>(GetController());
 		if (ai) {
 			arrowInstance->SetTargetPawn(ai->GetPlayer());
@@ -98,6 +102,7 @@ void AEnemyRange_Character::Shutting()
 
 void AEnemyRange_Character::DropArrow()
 {
+	// 공격 받을시 화살제거
 	if (arrowInstance) {
 		arrowInstance->Destroy();
 		arrowInstance = nullptr;
@@ -116,7 +121,6 @@ void AEnemyRange_Character::Attack()
 	Super::Attack();
 	if (bAttacking == false && !bShocking) {
 		PlayAnimMontage(DefaultAttack_Montage, Attack_Speed);
-		SpwArrow();
 		bAttacking = true;
 	}
 	
