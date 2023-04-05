@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "BTTask_Attack.h"
@@ -21,16 +21,17 @@ EBTNodeResult::Type UBTTask_Attack::ExecuteTask(UBehaviorTreeComponent& OwnerCom
 	auto Enemy = Cast<AEnemyBasic_Character>(OwnerComp.GetAIOwner()->GetPawn());
 	if(!Enemy) return EBTNodeResult::Failed;
 	
-
+	// 공격 함수 호출
 	Enemy->Attack();
 	bIsAttacking = true;
+
+	// OnAttackEnd 호출시 bIsAttacking = false;
 	Enemy->OnAttackEnd.Clear();
 	Enemy->OnAttackEnd.AddLambda([this]() -> void {
 		bIsAttacking = false;
-		//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Magenta, FString::Printf(TEXT("Attack End")));
 		});
 
-
+	// Task 상태 진행중
 	return EBTNodeResult::InProgress;
 }
 
@@ -39,8 +40,8 @@ void UBTTask_Attack::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemo
 {
 	Super::TickTask(OwnerComp, NodeMemory, DeltaTime);
 
+	// Task 완료
 	if (!bIsAttacking) {
 		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
-		//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Magenta, FString::Printf(TEXT("Attack End")));
 	}
 }
