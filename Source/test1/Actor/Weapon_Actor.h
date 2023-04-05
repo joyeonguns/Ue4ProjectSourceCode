@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -22,14 +22,18 @@ public:
 	void AttachMeshToPawn(FName AttachName);
 	void OnEquip(const class AWeapon_Actor* LastWeapon);
 	
+	// 공격함수
 	void ApplyAttack();
+	// 컬리전 적용
 	void ApplyCollision();
+	// 컬리전 해제
 	void DeleteCollision();
 
 private:
 	UPROPERTY(VisibleDefaultsOnly, Category=weapon)
 	USkeletalMeshComponent* WeaponMesh;
 
+	// 공격 컬리전
 	UPROPERTY(VisibleDefaultsOnly, Category = weapon)
 	class UBoxComponent* WeaponCollision;
 
@@ -41,11 +45,13 @@ public:
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
 
 
+	// 스폰 잔상 오브젝트
 	UPROPERTY(EditAnywhere, Category = Spawn)
 		TSubclassOf<AActor_GhostTail> SpawnGhostClass;
 
+	// 잔상 생성
 	void SpawnGhostTail();
 
-
+	// 잔상효과 타임핸들러 
 	FTimerHandle TH_Ghost;
 };
