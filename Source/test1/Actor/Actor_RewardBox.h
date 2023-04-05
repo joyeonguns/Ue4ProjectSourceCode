@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+Ôªø// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -25,16 +25,14 @@ protected:
 
 public:	
 
+	// OverlapEvent
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
 	virtual void NotifyActorEndOverlap(AActor* OtherActor) override;
 
 
 public:
-	void SetItem(int32 code);
 
 	void SetBuff(int32 code);
-
-	void GetWeapon();
 
 	void GetHeart();
 
@@ -46,19 +44,21 @@ public:
 
 	void GetShield();
 
+
+	// Reward Modelling
 	AActor* GetModel();
 
 	
 
 private:
-	// æ∆¿Ã≈€
+	// Spawn ItemClass
 	UPROPERTY(EditAnywhere, Category = spwn)
 		TArray<TSubclassOf<AActor>> WeaponArray;	
 
-	// πˆ«¡
+	// Spawn BuffClass
 	UPROPERTY(EditAnywhere, Category = spwn)
 		TArray<TSubclassOf<AActor>> BuffArray;
-
+		
 	AActor* ModelObj;
 
 	UPROPERTY(EditAnywhere, Category = spwn)

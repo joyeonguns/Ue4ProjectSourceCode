@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+ï»¿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "Actor_RewardBox.h"
@@ -21,7 +21,7 @@ void AActor_RewardBox::NotifyActorBeginOverlap(AActor* OtherActor)
 {
 	player = Cast<ATPS_Character>(OtherActor);
 	if (player) {
-		// µ¨¸®ÄÉÀÌÆ® ¿¬°á
+		// ë¸ë¦¬ì¼€ì´íŠ¸ ì—°ê²°
 		player->OnInteraction.Clear();
 		player->OnInteraction.AddLambda([this]() -> void {
 			OnIteraction.Broadcast();
@@ -39,7 +39,7 @@ void AActor_RewardBox::NotifyActorEndOverlap(AActor* OtherActor)
 {
 	player = Cast<ATPS_Character>(OtherActor);
 	if (player) {
-		// µ¨¸®ÄÉÀÌÆ® ÃÊ±âÈ­
+		// ë¸ë¦¬ì¼€ì´íŠ¸ ì´ˆê¸°í™”
 		player->OnInteraction.Clear();
 
 		auto plcontroller = Cast<ATPSPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
@@ -49,30 +49,20 @@ void AActor_RewardBox::NotifyActorEndOverlap(AActor* OtherActor)
 	}
 }
 
-void AActor_RewardBox::SetItem(int32 code)
-{
-	if (code >= WeaponArray.Num()) return;
-
-	FVector spwLoc = GetActorLocation();
-	FRotator spwRot = GetActorRotation();
-	FActorSpawnParameters SpawnInfo;
-	UWorld* world = GetWorld();
-	ModelObj = world->SpawnActor<AWeapon_Actor>(WeaponArray[code], spwLoc, spwRot, SpawnInfo);
-
-	OnIteraction.AddUObject(this, &AActor_RewardBox::GetWeapon);
-}
-
 
 void AActor_RewardBox::SetBuff(int32 code)
 {
 	if (code >= BuffArray.Num()) return;
 
+	// ë²„í”„ ëª¨ë¸ ìƒì„±
 	FVector spwLoc = GetActorLocation();
 	FRotator spwRot = GetActorRotation();
 	FActorSpawnParameters SpawnInfo;
 	UWorld* world = GetWorld();
 	ModelObj = world->SpawnActor<AActor>(BuffArray[code], spwLoc, spwRot, SpawnInfo);
 
+
+	// OnIteraction í•¨ìˆ˜ ì—°ê²°
 	switch (code)
 	{
 	case 0:
@@ -94,6 +84,7 @@ void AActor_RewardBox::SetBuff(int32 code)
 		break;
 	}
 
+	// OnEndReward í•¨ìˆ˜ ì—°ê²°
 	OnEndReward.AddLambda([this]()->void {
 		if (ModelObj) {
 			ModelObj->Destroy();
@@ -101,17 +92,6 @@ void AActor_RewardBox::SetBuff(int32 code)
 		});
 }
 
-void AActor_RewardBox::GetWeapon()
-{
-	if (player) {
-		auto weapon = Cast<AWeapon_Actor>(ModelObj);
-		player->SetCurrentWeapon(weapon, weapon);
-		player->OnInteraction.Clear();
-	}
-
-	
-	OnEndReward.Broadcast();
-}
 
 void AActor_RewardBox::GetHeart()
 {
