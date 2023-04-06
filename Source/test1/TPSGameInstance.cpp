@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+ï»¿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "TPSGameInstance.h"
@@ -6,7 +6,7 @@
 UTPSGameInstance::UTPSGameInstance()
 {	
 
-	// ½ºÅ×ÀÌÁö µ¥ÀÌÅÍ
+	// ìŠ¤í…Œì´ì§€ ë°ì´í„°í…Œì´ë¸” ì—°ê²°
 	FString Stage_Data_Path = TEXT("DataTable'/Game/Data/StageData.StageData'");
 	static ConstructorHelpers::FObjectFinder<UDataTable> DT_Stage(*Stage_Data_Path);
 
@@ -15,7 +15,7 @@ UTPSGameInstance::UTPSGameInstance()
 	}
 
 
-	// ÇÃ·¹ÀÌ¾î µ¥ÀÌÅÍ
+	// í”Œë ˆì´ì–´ ë°ì´í„°í…Œì´ë¸” ì—°ê²°
 	FString CharStat_Data_Path = TEXT("DataTable'/Game/Data/Character_Status.Character_Status'");
 	static ConstructorHelpers::FObjectFinder<UDataTable> DT_Char_stat(*CharStat_Data_Path);
 
@@ -23,7 +23,7 @@ UTPSGameInstance::UTPSGameInstance()
 		Character_stat_Table = DT_Char_stat.Object;
 	}
 	
-	// ÅÚ·±Æ® ·¹º§
+	// í…”ëŸ°íŠ¸ ë ˆë²¨ ë°ì´í„°í…Œì´ë¸” ì—°ê²°
 	FString StatusLevel_Path = TEXT("DataTable'/Game/Data/StatusLevel.StatusLevel'");
 	static ConstructorHelpers::FObjectFinder<UDataTable> DT_StatLevel(*StatusLevel_Path);
 
@@ -31,7 +31,7 @@ UTPSGameInstance::UTPSGameInstance()
 		StatusLevelTable = DT_StatLevel.Object;
 	}
 
-	// ¿ø°Å¸®Àû µ¥ÀÌÅÍ
+	// ì›ê±°ë¦¬ì  ë°ì´í„°í…Œì´ë¸” ì—°ê²° 
 	FString RangeStat_Data_Path = TEXT("DataTable'/Game/Data/EnemyRangeLevel.EnemyRangeLevel'");
 	static ConstructorHelpers::FObjectFinder<UDataTable> DT_Range_stat(*RangeStat_Data_Path);
 
@@ -39,7 +39,7 @@ UTPSGameInstance::UTPSGameInstance()
 		EnemyRange_stat_Table = DT_Range_stat.Object;
 	}
 
-	// ±Ù°Å¸®Àû µ¥ÀÌÅÍ
+	// ê·¼ê±°ë¦¬ì  ë°ì´í„°í…Œì´ë¸” ì—°ê²°
 	FString MeleeStat_Data_Path = TEXT("DataTable'/Game/Data/EnemyMeleeLevel.EnemyMeleeLevel'");
 	static ConstructorHelpers::FObjectFinder<UDataTable> DT_Melee_stat(*MeleeStat_Data_Path);
 
@@ -47,7 +47,7 @@ UTPSGameInstance::UTPSGameInstance()
 		EnemyMelee_stat_Table = DT_Melee_stat.Object;
 	}
 
-	statusArray.Init(6,8);
+	statusArray.Init(0,8);
 
 }
 

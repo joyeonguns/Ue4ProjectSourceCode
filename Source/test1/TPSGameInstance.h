@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+ï»¿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -82,30 +82,30 @@ class TEST1_API UTPSGameInstance : public UGameInstance
 public :
 	UTPSGameInstance();
 
-	// °ÔÀÓ ¾ÛÀÌ ÃÊ±âÈ­ µÉ½Ã È£ÃâµÇ´Â ÇÔ¼ö
+	// ê²Œì„ ì•±ì´ ì´ˆê¸°í™” ë ì‹œ í˜¸ì¶œë˜ëŠ” í•¨ìˆ˜
 	virtual void Init() override;
 
 
-	// ½ºÅ×ÀÌÁö
+	// ìŠ¤í…Œì´ì§€ ì •ë³´ ë°ì´í„°í…Œì´ë¸”
 	FStageDataTable* Get_FStageDataTable(int32 level);
 
 	UPROPERTY()
 		class UDataTable* StageDataTable;
 
 
-	// ½ºÅÈ ·¹º§
+	// ìŠ¤íƒ¯ ë ˆë²¨ ë°ì´í„°í…Œì´ë¸”
 	FStatusLevel* Get_FStatusLevel(int32 level);
 
 	UPROPERTY()
 		class UDataTable* StatusLevelTable;
 
-	// ÇÃ·¹ÀÌ¾î ½ºÅİ
+	// í”Œë ˆì´ì–´ ìŠ¤í…Ÿ ë°ì´í„°í…Œì´ë¸”
 	FCharacterStat* Get_FCharacter_Status(int32 code);
 
 	UPROPERTY()
 		class UDataTable* Character_stat_Table;
 
-	// Àû ½ºÅİ
+	// ì  ìŠ¤í…Ÿ ë°ì´í„°í…Œì´ë¸”
 	FCharacterStat* Get_FEnemyRange_Status(int32 code);
 
 	UPROPERTY()
@@ -116,25 +116,21 @@ public :
 	UPROPERTY()
 		class UDataTable* EnemyMelee_stat_Table;
 
-	// ½ºÅİ ¹è¿­
+	// ìŠ¤í…Ÿ ë°°ì—´
 	UPROPERTY(VisibleAnywhere, Category = Status)
 		TArray<int32> statusArray;
 
 
-	// ¼Ó¼º ½ºÅİ
+	// íŠ¹ì„± ì½”ë“œ
 	UPROPERTY(VisibleAnywhere, Category = Item)
-		int32 SelectedWeaponCode = 0;
+		int32 SelectedSchoolCode = 0;
 
-	// Àû ¹öÇÁ È®·ü
-	UPROPERTY(VisibleAnywhere, Category = Status)
-		int32 EnemyBuff = 0;
-
-	// Æ÷ÀÎÆ®
+	// í¬ì¸íŠ¸
 	UPROPERTY(VisibleAnywhere, Category = point)
 	int32 Point = 1000;
 
 
-	// ÀüÅõ µ¥ÀÌÅÍ
+	// ì „íˆ¬ ë°ì´í„°
 	FBattleData_Enemy* BattleData_Enemy;
 	FBattleData_Player* BattleData_Player;
 
