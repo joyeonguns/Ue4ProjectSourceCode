@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "Title_UserWidget.h"
@@ -18,11 +18,13 @@ void UTitle_UserWidget::NativeConstruct()
 	BTN_GameStart->OnClicked.AddDynamic(this, &UTitle_UserWidget::GameStartCallback);
 	BTN_GameEnd->OnClicked.AddDynamic(this, &UTitle_UserWidget::GameEndCallback);
 
-
+	// GameInstace의 정보 수정
 	auto gameinstance = Cast<UTPSGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 	if (gameinstance) {
+		// statusArray 값 0으로 초기화
 		gameinstance->statusArray.Init(0, 8);
-		
+		// point 초기화
+		gameinstance->Point = 1000;
 	}
 	
 }
