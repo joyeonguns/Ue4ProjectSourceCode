@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "UserWidget_InGameData.h"
@@ -9,7 +9,7 @@ void UUserWidget_InGameData::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	//��ư
+	//버튼
 	Btn_Exit = Cast<UButton>(GetWidgetFromName(TEXT("Button_Exit")));
 	Btn_NextPage = Cast<UButton>(GetWidgetFromName(TEXT("Button_after_Page")));
 	Btn_PrePage = Cast<UButton>(GetWidgetFromName(TEXT("Button_befor_Page")));
@@ -23,9 +23,11 @@ void UUserWidget_InGameData::NativeConstruct()
 	Page_1 = Cast<UCanvasPanel>(GetWidgetFromName(TEXT("page1")));
 	Page_2 = Cast<UCanvasPanel>(GetWidgetFromName(TEXT("page2")));
 
+	// 배열에 추가
 	Pages.Add(Page_1);
 	Pages.Add(Page_2);
 
+	// 버튼 이벤트 추가
 	if (Btn_Exit) {
 		Btn_Exit->OnClicked.Clear();
 		Btn_Exit->OnClicked.AddDynamic(this, &UUserWidget_InGameData::OnClickExitBTN);
@@ -39,8 +41,7 @@ void UUserWidget_InGameData::NativeConstruct()
 		Btn_PrePage->OnClicked.AddDynamic(this, &UUserWidget_InGameData::OnClickNextPage);
 	}
 
-	//DefaultUISetting();
-
+	// 페이지 설정
 	CurrentPage = 1;
 }
 
@@ -49,11 +50,15 @@ void UUserWidget_InGameData::DefaultUISetting()
 	Page_1 = Cast<UCanvasPanel>(GetWidgetFromName(TEXT("page1")));
 	Page_2 = Cast<UCanvasPanel>(GetWidgetFromName(TEXT("page2")));
 
+	// Page_1 보여줌
 	Page_1->SetVisibility(ESlateVisibility::Visible);
 	Page_2->SetVisibility(ESlateVisibility::Hidden);
 
+	// 플레이어 데이터 설정
 	Set_PlayerData();
+	// 적 데이터 설정
 	Set_EnemyData();
+	// 스테이지 데이터 설정
 	Set_StageNumber();
 }
 
@@ -67,25 +72,24 @@ void UUserWidget_InGameData::OnClickNextPage()
 	Page_1 = Cast<UCanvasPanel>(GetWidgetFromName(TEXT("page1")));
 	Page_2 = Cast<UCanvasPanel>(GetWidgetFromName(TEXT("page2")));
 
-	// Ȧ
+	// 홀수 페이지
 	if ((CurrentPage % 2) == 0) {
 		CurrentPage++;
 		Page_1->SetVisibility(ESlateVisibility::Visible);
 		Page_2->SetVisibility(ESlateVisibility::Hidden);
 	}
-	// ¦
+	// 짝수 페이지
 	else {
 		CurrentPage++;
 		Page_1->SetVisibility(ESlateVisibility::Hidden);
 		Page_2->SetVisibility(ESlateVisibility::Visible);	
 	}
 
-	//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Blue, FString::Printf(TEXT(" openpage : %d"), CurrentPage));
-
 }
 
 void UUserWidget_InGameData::Set_StageNumber()
 {
+	// GameInstance의 배틀 데이터에서 현재스테이지 가져옴
 	auto gameinstance = Cast<UTPSGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 	if (!gameinstance) return;
 	int32 _number = gameinstance->Get_BattleData_Enemy()->Stage;
@@ -98,6 +102,7 @@ void UUserWidget_InGameData::Set_StageNumber()
 
 void UUserWidget_InGameData::Set_EnemyData()
 {
+	// GameInstance의 배틀 데이터에서 적 데이터를 가져옴
 	auto gameinstance = Cast<UTPSGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 	if (!gameinstance) return;
 
@@ -119,6 +124,7 @@ void UUserWidget_InGameData::Set_EnemyData()
 
 void UUserWidget_InGameData::Set_PlayerData()
 {
+	// GameInstance의 배틀 데이터에서 플레이어 데이터를 가져옴
 	auto gameinstance = Cast<UTPSGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 	if (!gameinstance) return;
 

@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -25,9 +25,10 @@ class TEST1_API UUserWidget_InGameData : public UUserWidget
 public:
 	virtual void NativeConstruct() override;
 
-
+	// UI 초기 설정
 	void DefaultUISetting();
 
+	// 나가기 버튼에 적용할 델리게이트함수
 	FOnExitInGameDataWidget_Delecate OnExitInGameDataWidget;
 
 	UFUNCTION()
@@ -35,10 +36,13 @@ public:
 	UFUNCTION()
 		void OnClickNextPage();
 
+	// 현재 스테이지 텍스트 설정
 	UFUNCTION()
 		void Set_StageNumber();
+	// 스테이지 적 데이터 텍스트 설정
 	UFUNCTION()
 		void Set_EnemyData();
+	// 플레이어 데이터 텍스트 설정
 	UFUNCTION()
 		void Set_PlayerData();
 
@@ -63,6 +67,7 @@ private:
 	UPROPERTY()
 		class UCanvasPanel* Page_2;
 
+	// 페이지 배열
 	UPROPERTY()
 		TArray<class UCanvasPanel*> Pages;
 
