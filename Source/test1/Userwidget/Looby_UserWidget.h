@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -22,18 +22,26 @@ class TEST1_API ULooby_UserWidget : public UUserWidget
 public:
 	virtual void NativeConstruct() override;
 
-	// HightBar
+	// 상단 버튼
+		// 스테이터스 페이지 이동
 	UFUNCTION()
 	void OnClicked_GoStatBTN();
+		// 도감 페이지 이동
 	UFUNCTION()
-	void OnClicked_GoWeaponBTN();
+	void OnClicked_GoDataBTN();
+		// 속성 선택 페이지 이동
 	UFUNCTION()
 	void OnClicked_GoInGameBTN();
+		// 타이틀로 이동
 	UFUNCTION()
 	void OnClicked_GoTitleBTN();
 
 
-	//  StatusPage
+	//  StatusPage	
+		// + - 기능
+	void AddStatus(int32 num);
+	void DesStatus(int32 num);
+		// 능력 업그레이드 + - 버튼
 	UFUNCTION()
 		void OnClicked_AddStatBTN_0();
 	UFUNCTION()
@@ -64,41 +72,33 @@ public:
 	UFUNCTION()
 		void OnClicked_DesStatBTN_5();
 
-	UFUNCTION()
-		void OnClicked_AddStatBTN_6();
-	UFUNCTION()
-		void OnClicked_DesStatBTN_6();
-
-	UFUNCTION()
-		void OnClicked_AddStatBTN_7();
-	UFUNCTION()
-		void OnClicked_DesStatBTN_7();
+	
 
 
 	// InGamePage
 	UFUNCTION()
 		void OnClicked_GameStart();
 
+	// 특성 선택
 	UFUNCTION()
-		void OnClicked_SelectWeapon_0();
+		void OnClicked_SelectSchool_1();
 	UFUNCTION()
-		void OnClicked_SelectWeapon_1();
+		void OnClicked_SelectSchool_2();
 	UFUNCTION()
-		void OnClicked_SelectWeapon_2();
+		void OnClicked_SelectSchool_3();
 
 
-
+	// 능력치 업그레이드 텍스트 설정
 	void SetStatState();
+	// GameInstance에서 능력치 업그레이드 배열 가져옴
 	void TakeStatusArray();
 
 private:
+	// 능력치 업그레이드 배열 
 	TArray<int32> statusArray;
-	TArray<int32> UnLockArray;
-	int32 SelectWeaponCode;
-	FLinearColor inactiveColor;
-	FLinearColor activeColor;
+	// 특성 코드
+	int32 SelectSchool;
 
-	TArray<UImage*> WeaponBook;
 
 	// Canvas
 	UPROPERTY()
@@ -109,7 +109,7 @@ private:
 		class UCanvasPanel* InGamePanel;
 
 
-	// highBar
+	// highBar Button
 	UPROPERTY()
 		class UButton* BTN_GoStat;
 	UPROPERTY()
@@ -119,104 +119,79 @@ private:
 	UPROPERTY()
 		class UButton* BTN_GoTitle;
 
+
 	// StatPage
+	// 능력 업그레이드 + 버튼 배열 
+	TArray<class UButton*> AddButtonArray;
+	// 능력 업그레이드 - 버튼 배열 
+	TArray<class UButton*> DesButtonArray;
+	// 능력 업그레이드 수치 Text 배열 
+	TArray<class UTextBlock*> StatNumArray;
+	// 능력 업그레이드 설명 Text 배열 
+	TArray<class UTextBlock*> StatCommentArray;
+
 	UPROPERTY()
 		class UButton* BTN_AddStat_0;
 	UPROPERTY()
-		class UButton* BTN_DecStat_0;
+		class UButton* BTN_DesStat_0;
 	UPROPERTY()
 		class UTextBlock* Text_NumStat_0;
+	UPROPERTY()
+		class UTextBlock* Text_StatComent_0;
 
 	UPROPERTY()
 		class UButton* BTN_AddStat_1;
 	UPROPERTY()
-		class UButton* BTN_DecStat_1;
+		class UButton* BTN_DesStat_1;
 	UPROPERTY()
 		class UTextBlock* Text_NumStat_1;
+	UPROPERTY()
+		class UTextBlock* Text_StatComent_1;
 
 	UPROPERTY()
 		class UButton* BTN_AddStat_2;
 	UPROPERTY()
-		class UButton* BTN_DecStat_2;
+		class UButton* BTN_DesStat_2;
 	UPROPERTY()
 		class UTextBlock* Text_NumStat_2;
+	UPROPERTY()
+		class UTextBlock* Text_StatComent_2;
 
 	UPROPERTY()
 		class UButton* BTN_AddStat_3;
 	UPROPERTY()
-		class UButton* BTN_DecStat_3;
+		class UButton* BTN_DesStat_3;
 	UPROPERTY()
 		class UTextBlock* Text_NumStat_3;
+	UPROPERTY()
+		class UTextBlock* Text_StatComent_3;
 
 	UPROPERTY()
 		class UButton* BTN_AddStat_4;
 	UPROPERTY()
-		class UButton* BTN_DecStat_4;
+		class UButton* BTN_DesStat_4;
 	UPROPERTY()
 		class UTextBlock* Text_NumStat_4;
+	UPROPERTY()
+		class UTextBlock* Text_StatComent_4;
 
 	UPROPERTY()
 		class UButton* BTN_AddStat_5;
 	UPROPERTY()
-		class UButton* BTN_DecStat_5;
+		class UButton* BTN_DesStat_5;
 	UPROPERTY()
 		class UTextBlock* Text_NumStat_5;
+	UPROPERTY()
+		class UTextBlock* Text_StatComent_5;
 
-	UPROPERTY()
-		class UButton* BTN_AddStat_6;
-	UPROPERTY()
-		class UButton* BTN_DecStat_6;
-	UPROPERTY()
-		class UTextBlock* Text_NumStat_6;
-
-	UPROPERTY()
-		class UButton* BTN_AddStat_7;
-	UPROPERTY()
-		class UButton* BTN_DecStat_7;
-	UPROPERTY()
-		class UTextBlock* Text_NumStat_7;
-
+	// 포인트 텍스트
 	UPROPERTY()
 		class UTextBlock* poinText;
 	int32 point;
 
 
-	// WeaponBook
-	UPROPERTY()
-		class UImage* Img_Weapon_0;
-	UPROPERTY()
-		class UImage* Img_Weapon_1;
-	UPROPERTY()
-		class UImage* Img_Weapon_2;
-	UPROPERTY()
-		class UImage* Img_Weapon_3;
-	UPROPERTY()
-		class UImage* Img_Weapon_4;
-	UPROPERTY()
-		class UImage* Img_Weapon_5;
-	UPROPERTY()
-		class UImage* Img_Weapon_6;
-	UPROPERTY()
-		class UImage* Img_Weapon_7;
-	UPROPERTY()
-		class UImage* Img_Weapon_8;
-	UPROPERTY()
-		class UImage* Img_Weapon_9;
-	UPROPERTY()
-		class UImage* Img_Weapon_10;
-	UPROPERTY()
-		class UImage* Img_Weapon_11;
-	UPROPERTY()
-		class UImage* Img_Weapon_12;
-	UPROPERTY()
-		class UImage* Img_Weapon_13;
-	UPROPERTY()
-		class UImage* Img_Weapon_14;
 
-
-
-
-	// InGame
+	// InGame 버튼
 	UPROPERTY()
 		class UButton* BTN_GameStart;
 	UPROPERTY()
