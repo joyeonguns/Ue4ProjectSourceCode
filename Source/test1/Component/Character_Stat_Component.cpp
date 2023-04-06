@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "Character_Stat_Component.h"
@@ -14,7 +14,7 @@ UCharacter_Stat_Component::UCharacter_Stat_Component()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = false;
 
-	// Inintialize �Լ������ ����
+	// Inintialize 함수사용을 위해
 	bWantsInitializeComponent = true;
 
 	code = 2;
@@ -36,31 +36,35 @@ void UCharacter_Stat_Component::InitializeComponent()
 
 	current_Status = new FCharacterStat();
 
+	// 플레이어
 	if (Mode == 0) {
 		TakeInstanceDatas(code);
 		SetCurrentData();
 		SetHp(current_Status->Hp);
 	}
+	// 적
 	else {
 		current_Status = new FCharacterStat();
-		SetEnemyRangeData();
+		SetEnemyData();
 		SetHp(current_Status->Hp);
 	}
 }
 
 void UCharacter_Stat_Component::TakeInstanceDatas(int32 Rolecode)
 {
-	//FName txtn = UGameplayStatics::GetGameInstance(GetWorld())->GetFName();
-	UE_LOG(LogTemp, Warning, TEXT(" NAME!!!"));
 
+	// 게임 인스턴스의 정보를 가져옴
 	auto _GameInstance = Cast<UTPSGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 	if (_GameInstance) {
 		UE_LOG(LogTemp, Warning, TEXT("GameInstance Success"));
-
+				
 		Rolecode = _GameInstance->SelectedWeaponCode;
+		// 속성에 따른 플레이어 캐릭터 기본 정보저장
 		Default_Status = _GameInstance->Get_FCharacter_Status(Rolecode);
 		School = Default_Status->School;
 
+
+		// 능력치 업그레이드 정보 저장
 		if (_GameInstance->statusArray.Num() < 1) return;
 
 		TArray<int32> _statusArray = _GameInstance->statusArray;
@@ -91,6 +95,7 @@ void UCharacter_Stat_Component::TakeInstanceDatas(int32 Rolecode)
 
 void UCharacter_Stat_Component::SetCurrentData()
 {	
+	// 캐릭터 기본 정보와 능력치 업그레이드를 통해 현재 캐릭터 정보 저장
 	if (Default_Status == nullptr) return;
 
 	current_Status->School = Default_Status->School;
@@ -102,6 +107,7 @@ void UCharacter_Stat_Component::SetCurrentData()
 
 	currentHp = current_Status->Hp;
 
+	// 게임 인스턴스의 전투 정보에 현재 캐릭터 정보 저장
 	auto _GameInstance = Cast<UTPSGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 	if (_GameInstance) {
 		_GameInstance->BattleData_Player->Hp = current_Status->Hp;
@@ -125,21 +131,26 @@ void UCharacter_Stat_Component::SetCurrentData()
 
 void UCharacter_Stat_Component::SetDamage(float Damage)
 {
+	// 쉴드가 있는 경우 쉴드 횟수만 감소
 	if (Shield > 0) {
 		Shield--;
-		//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Shield"));
 		if (Shield == 0) {
+			// 나음 쉴드 횟수가 없을 경우 오라 해제
 			OnResetAura.Broadcast();
 		}
 		return;
 	}
+	// 쉴드가 없을 경우 데미지 적용
 	else {
 		Shield = 0;
 		if (current_Status && currentHp > 0.0f) {
-			//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Delecate SetDamage"));
+			// newHp 를 0 ~ 최대Hp 사이로 반환
 			int newHp = FMath::Clamp<float>(currentHp - Damage, 0.0f, current_Status->Hp);
+			// 데미지 수치 UI 생성 및 hit 애니메이션 실행 등 연결된 함수 실행
 			OnTakeDamage.Broadcast();
 			OnTakeDamage_Param.Broadcast(Damage);
+			
+			// newHp를 적용
 			SetHp(newHp);
 		}
 	}	
@@ -147,8 +158,9 @@ void UCharacter_Stat_Component::SetDamage(float Damage)
 
 void UCharacter_Stat_Component::SetDebuffDamage(float Damage)
 {
+	// 디버프 데미지는 쉴드의 영향을 받지 않음
+	// 데미지 수치 UI 생성 X 및 hit 애니메이션 실행 X
 	if (current_Status) {
-		//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Delecate SetDamage"));
 		int newHp = FMath::Clamp<float>(currentHp - Damage, 0.0f, current_Status->Hp);
 		SetHp(newHp);
 	}
@@ -156,20 +168,26 @@ void UCharacter_Stat_Component::SetDebuffDamage(float Damage)
 
 void UCharacter_Stat_Component::SetHp(float newHp)
 {
+	// 현재 Hp 저장
 	currentHp = newHp;
+	// Hp UI 업데이트
 	OnHpApply.Broadcast();
 
+	// HP <= 0
 	if (currentHp <= KINDA_SMALL_NUMBER) {
 		currentHp = 0.0f;
+		// 남은 목숨이있는 경우 50% 체력 회복
 		if (life > 0) {
 			life--;
 			currentHp = current_Status->Hp / 2;
+			// HP UI 업데이트
 			OnHpApply.Broadcast();
+			// 수호천사 오라 해제
 			OnResetAura.Broadcast();
 			return;
 		}
+		// 캐릭터 사망
 		OnHpIsZero.Broadcast();
-		//OnResetAura.Broadcast();
 	}
 
 
@@ -188,14 +206,6 @@ void UCharacter_Stat_Component::SetRecovery_Percent(float addHp)
 	SetHp(newHp);
 }
 
-float UCharacter_Stat_Component::GetAttack()
-{
-	float Attack = 0.0f;
-	if (current_Status) {
-		Attack = 20.0f;
-	}
-	return Attack;
-}
 
 float UCharacter_Stat_Component::GetHpRatio()
 {
@@ -234,27 +244,28 @@ FCharacterStat* UCharacter_Stat_Component::Getcurrent_Status()
 	return current_Status;
 }
 
-void UCharacter_Stat_Component::SetEnemyRangeData()
+void UCharacter_Stat_Component::SetEnemyData()
 {
-	//FName txtn = UGameplayStatics::GetGameInstance(GetWorld())->GetFName();
-	UE_LOG(LogTemp, Warning, TEXT(" NAME!!!"));
-
+	// 게임인스턴스 정보 가져오기
 	auto _GameInstance = Cast<UTPSGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 	if (_GameInstance) {
 		UE_LOG(LogTemp, Warning, TEXT("GameInstance Success"));
 
-
+		// 능력치 업그레이드 중 적 레벨 강화 가져오기
 		TArray<int32> _statusArray = _GameInstance->statusArray;
 		int32 level = _statusArray[4];
 
+		// 근거리 적
 		if (Mode == 1) {
 			Default_Status = _GameInstance->Get_FEnemyMelee_Status(level);
 		}
+		// 원거리 적
 		else if (Mode == 2) {
 			Default_Status = _GameInstance->Get_FEnemyRange_Status(level);
 		}		
 
 		current_Status = new FCharacterStat();
+		// Default_Status의 정보를 current_Status에 깊은 복사 해준다. 
 		Default_Status->DeepCopy(current_Status);
 		
 
