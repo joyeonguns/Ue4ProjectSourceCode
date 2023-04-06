@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "LoobyUIPlayerController.h"
@@ -9,15 +9,19 @@ void ALoobyUIPlayerController::BeginPlay()
 
 	if (!UIWidgetClass) return;
 
+	// 로비UI 생성 및 띄우기
 	UIWidgetInstance = CreateWidget<UUserWidget>(this, UIWidgetClass);
-	UIWidgetInstance->AddToViewport();
+	if (UIWidgetInstance) {
+		UIWidgetInstance->AddToViewport();
+	}
 
 	if (!UIWidgetInstance) return;
 
+	// 입력 상태를 UIONly로 설정
 	FInputModeUIOnly Mode;
 	Mode.SetWidgetToFocus(UIWidgetInstance->GetCachedWidget());
 	SetInputMode(Mode);
-	bShowMouseCursor = true;
 
-	//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("Loby"));
+	// 마우스 커서 보임
+	bShowMouseCursor = true;
 }
