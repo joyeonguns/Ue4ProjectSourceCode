@@ -57,9 +57,10 @@ void UCharacter_Stat_Component::TakeInstanceDatas(int32 Rolecode)
 	auto _GameInstance = Cast<UTPSGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 	if (_GameInstance) {
 		UE_LOG(LogTemp, Warning, TEXT("GameInstance Success"));
-				
-		Rolecode = _GameInstance->SelectedWeaponCode;
-		// 속성에 따른 플레이어 캐릭터 기본 정보저장
+		
+		// 특성코드 가져옴
+		Rolecode = _GameInstance->SelectedSchoolCode;
+		// 특성에 따른 플레이어 캐릭터 기본 정보저장
 		Default_Status = _GameInstance->Get_FCharacter_Status(Rolecode);
 		School = Default_Status->School;
 
